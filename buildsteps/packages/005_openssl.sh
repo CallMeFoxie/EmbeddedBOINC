@@ -13,6 +13,6 @@ build() {
 	make install DESTDIR=${DESTDIR}
 }
 
-unpackpkg() {
+unpack() {
 	mv build/openssl-OpenSSL_${PKGVERSION} build/OpenSSL_${PKGVERSION}
 }

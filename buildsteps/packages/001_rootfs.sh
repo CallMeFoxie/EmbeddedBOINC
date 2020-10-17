@@ -5,11 +5,12 @@ PKGNAME="rootfs"
 
 build() {
 	echo "Creating from empty"
-}
-
-package() {
+	cd $DESTDIR
 	mkdir -p bin sbin lib lib64 usr/{bin,sbin,lib} etc proc sys boot dev home root mnt opt run var/{lib,lock} tmp run
 	ln -s tmp var/
 	ln -s run var/
+}
+
+package() {
 	tar cvp . | xz > "${1}-bin.tar.xz"
 }

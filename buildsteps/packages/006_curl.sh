@@ -7,7 +7,7 @@ URL="https://github.com/curl/curl/releases/download/curl-7_73_0/"
 BUILDDEPS=""
 
 build() {
-	./configure --prefix=/usr --host=aarch64-linux-gnu --with-ssl --disable-ipv6 --disable-unix-sockets --disable-verbose --without-libidn --with-zlib
+	./configure ${DEFAULT_CONFIGURE_FLAGS} --with-ssl --disable-ipv6 --disable-unix-sockets --disable-verbose --without-libidn --with-zlib
 	make -j16
 	make install DESTDIR=${DESTDIR}
 }

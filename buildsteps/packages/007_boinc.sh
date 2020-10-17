@@ -8,7 +8,7 @@ BUILDDEPS=""
 
 build() {
 	./_autosetup
-	./configure --prefix=/usr --host=aarch64-linux-gnu --disable-server --disable-fcgi --disable-manager --sysconfdir=/etc --localstatedir=/var 
+	./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-server --disable-fcgi --disable-manager
 	make -j16
 	make install DESTDIR=${DESTDIR}
 }

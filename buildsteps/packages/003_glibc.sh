@@ -11,9 +11,7 @@ build() {
 	cd ../glibc-build/
 	../glibc-${glibc_version}/configure \
 	        CROSS_COMPILE=${CLFS_TARGET}- \
-	        --prefix=/ \
-        	--build=${CLFS_HOST} \
-	        --host=${CLFS_TARGET}
+		${DEFAULT_CONFIGURE_FLAGS}
 	make -j16
 	make install DESTDIR=${DESTDIR}
 }

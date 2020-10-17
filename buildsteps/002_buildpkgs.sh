@@ -8,6 +8,8 @@ export STRIP="aarch64-linux-gnu-strip -s"
 export TARGETFS="/clfs/targetfs/"
 export TARGETDEV="/clfs/targetdev/"
 
+export DEFAULT_CONFIGURE_FLAGS="--prefix=/usr --sysconfdir=/etc --localstatedir=/var --build=${CLFS_HOST} --host=${CLFS_TARGET}"
+
 mkdir -p ${TARGETFS} ${TARGETDEV} build sources out
 
 rm -rf ${TARGETFS}/* ${TARGETDEV}/* build/*
@@ -16,13 +18,36 @@ package_default() {
 	rm -rf ../tmp
 	mkdir -p ../tmp
 	# help files
-	find . -path "./usr/share/man/*" >> ../tmp/helpfiles.txt
+	find . \
+		-path "./usr/share/man/*" -o \
+		-path "./usr/share/doc/*" \
+		>> ../tmp/helpfiles.txt
 	# dev files
-	find . -path "./usr/include*" -o -path "./usr/lib/pkgconfig*" -o -path "./usr/lib/*.a" -o -path "./usr/lib64/*.a" -o -path "./lib/*.a" -o -path "./lib64/*.a" >> ../tmp/devfiles.txt
+	find . \
+		-path "./usr/include*" -o \
+		-path "./usr/lib/pkgconfig*" -o \
+		-path "./usr/lib/*.a" -o \
+		-path "./usr/lib64/*.a" -o \
+		-path "./lib/*.a" -o \
+		-path "./lib64/*.a" -o \
+		-path "./usr/lib64/*.o" -o \
+		-path "./usr/lib/*.la" \
+		>> ../tmp/devfiles.txt
 	# lib files
-	find . -path "./usr/lib/*.so*" -o -path "./lib/*.so*" -o -path "./lib64/*.so*" -o -path "./usr/lib64/*.so*" >> ../tmp/libfiles.txt
+	find . \
+		-path "./usr/lib/*.so*" -o \
+		-path "./lib/*.so*" -o \
+		-path "./lib64/*.so*" -o \
+		-path "./usr/lib64/*.so*" \
+		>> ../tmp/libfiles.txt
 	# bin files
-	find . -path "./usr/bin/*" -o -path "./bin/*" -o -path "./usr/sbin/*" -o -path "./sbin/*" -o -path "./etc/*" >> ../tmp/binfiles.txt
+	find . \
+		-path "./usr/bin/*" -o \
+		-path "./bin/*" -o \
+		-path "./usr/sbin/*" -o \
+		-path "./sbin/*" -o \
+		-path "./etc/*" \
+		>> ../tmp/binfiles.txt
 	
 	# strip binaries and libraries
 	for xfile in $(cat ../tmp/binfiles.txt ../tmp/libfiles.txt); do
@@ -34,12 +59,17 @@ package_default() {
 	done
 
 	for i in help dev lib bin; do
-		[ "$(cat ../tmp/${i}files.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}.tar.xz"
+		[ "$(cat ../tmp/${i}files.txt | sort | uniq | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}.tar.xz"
+		cat ../tmp/${i}files.txt | xargs rm -rf
 	done
+
+	find . -type f >> ../tmp/leftovers.txt
+	[ "$(cat ../tmp/leftovers.txt | sort | uniq | wc -l)" -ne 0 ] && tar cvT ../tmp/leftovers.txt | xz > "${1}-leftover.tar.xz" || :
 }
 
 for pkgfile in $(ls packages | sort -n); do
 	source ./packages/${pkgfile}
+	rm -rf tmp/
 	echo "==== Working with ${PKGNAME} @ ${PKGVERSION} ===="
 	BUILD=1
 
@@ -65,8 +95,8 @@ for pkgfile in $(ls packages | sort -n); do
 			echo "==== Unpacking ${SOURCEFILE} ===="
 			tar xpf sources/${SOURCEFILE} -C build/
 		fi
-		unpackpkg=$(type -t unpack || :)
-		if [ ! -z "$unpackpkg" ]; then
+		hasunpack=$(type -t unpack || :)
+		if [ ! -z "$hasunpack" ]; then
 			unpack
 		fi
 
@@ -76,8 +106,8 @@ for pkgfile in $(ls packages | sort -n); do
 			build
 		)
 		echo "=== Packaging ${pkgfile} ==="
-		typepkg=$(type -t package || :)
-		if [ -n "$typepkg" ]; then
+		haspackaging=$(type -t package || :)
+		if [ -n "$haspackaging" ]; then
 			(
 				cd destdir
 				package "../out/${PKGNAME}-${PKGVERSION}"
@@ -88,9 +118,10 @@ for pkgfile in $(ls packages | sort -n); do
 				package_default "../out/${PKGNAME}-${PKGVERSION}"
 			)
 		fi
-		unset PKGPATH
-		unset -f unpack
 	fi
+	unset -f unpack
+	unset -f package
+	unset PKGPATH haspackaging hasunpack
 
 	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib.tar.xz" -C ${TARGETFS} || :
 	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev.tar.xz" -C ${TARGETFS} || :
