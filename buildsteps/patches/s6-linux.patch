@@ -1,0 +1,44 @@
+diff -rupb s6-2.9.2.0/src/conn-tools/s6-ipcserver.c s6-2.9.2.0-fixed/src/conn-tools/s6-ipcserver.c
+--- s6-2.9.2.0/src/conn-tools/s6-ipcserver.c	2017-12-07 18:37:07.000000000 +0100
++++ s6-2.9.2.0-fixed/src/conn-tools/s6-ipcserver.c	2020-10-17 23:16:34.850340161 +0200
+@@ -7,6 +7,7 @@
+ #include <skalibs/strerr2.h>
+ #include <skalibs/djbunix.h>
+ #include <s6/config.h>
++#include <linux/limits.h>
+ 
+ #define USAGE "s6-ipcserver [ -q | -Q | -v ] [ -d | -D ] [ -P | -p ] [ -1 ] [ -c maxconn ] [ -C localmaxconn ] [ -b backlog ] [ -a socketperms ] [ -G gid,gid,... ] [ -g gid ] [ -u uid ] [ -U ] path prog..."
+ #define dieusage() strerr_dieusage(100, USAGE)
+diff -rupb s6-2.9.2.0/src/daemontools-extras/s6-applyuidgid.c s6-2.9.2.0-fixed/src/daemontools-extras/s6-applyuidgid.c
+--- s6-2.9.2.0/src/daemontools-extras/s6-applyuidgid.c	2017-08-22 17:03:21.000000000 +0200
++++ s6-2.9.2.0-fixed/src/daemontools-extras/s6-applyuidgid.c	2020-10-17 23:18:24.837740223 +0200
+@@ -9,6 +9,7 @@
+ #include <skalibs/sgetopt.h>
+ #include <skalibs/env.h>
+ #include <skalibs/djbunix.h>
++#include <linux/limits.h>
+ 
+ #define USAGE "s6-applyuidgid [ -z ] [ -u uid ] [ -g gid ] [ -G gidlist ] [ -U ] prog..."
+ #define dieusage() strerr_dieusage(100, USAGE)
+diff -rupb s6-2.9.2.0/src/daemontools-extras/s6-envuidgid.c s6-2.9.2.0-fixed/src/daemontools-extras/s6-envuidgid.c
+--- s6-2.9.2.0/src/daemontools-extras/s6-envuidgid.c	2018-08-01 22:27:57.000000000 +0200
++++ s6-2.9.2.0-fixed/src/daemontools-extras/s6-envuidgid.c	2020-10-17 23:15:54.482560675 +0200
+@@ -10,6 +10,7 @@
+ #include <skalibs/strerr2.h>
+ #include <skalibs/env.h>
+ #include <skalibs/djbunix.h>
++#include <linux/limits.h>
+ 
+ #define USAGE "s6-envuidgid [ -i | -D defaultuid:defaultgid ] [ -u | -g | -B ] [ -n ] account prog..."
+ #define dieusage() strerr_dieusage(100, USAGE)
+diff -rupb s6-2.9.2.0/src/fdholder/s6-fdholder-daemon.c s6-2.9.2.0-fixed/src/fdholder/s6-fdholder-daemon.c
+--- s6-2.9.2.0/src/fdholder/s6-fdholder-daemon.c	2017-08-22 17:07:27.000000000 +0200
++++ s6-2.9.2.0-fixed/src/fdholder/s6-fdholder-daemon.c	2020-10-17 23:18:01.781865881 +0200
+@@ -7,6 +7,7 @@
+ #include <skalibs/strerr2.h>
+ #include <skalibs/djbunix.h>
+ #include <s6/config.h>
++#include <linux/limits.h>
+ 
+ #define USAGE "s6-fdholder-daemon [ -v verbosity ] [ -d | -D ] [ -1 ] [ -c maxconn ] [ -n maxfds ] [ -b backlog ] [ -G gid,gid,... ] [ -g gid ] [ -u uid ] [ -U ] [ -t timeout ] [ -T lameducktimeout ] [ -i rulesdir | -x rulesfile ] path"
+ #define dieusage() strerr_dieusage(100, USAGE)

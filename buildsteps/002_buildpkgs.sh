@@ -31,7 +31,8 @@ package_default() {
 		-path "./lib/*.a" -o \
 		-path "./lib64/*.a" -o \
 		-path "./usr/lib64/*.o" -o \
-		-path "./usr/lib/*.la" \
+		-path "./usr/lib/*.la" -o \
+		-path "./usr/lib/*/sysdeps/*" \
 		>> ../tmp/devfiles.txt
 	# lib files
 	find . \
@@ -46,7 +47,8 @@ package_default() {
 		-path "./bin/*" -o \
 		-path "./usr/sbin/*" -o \
 		-path "./sbin/*" -o \
-		-path "./etc/*" \
+		-path "./etc/*" -o \
+		-path "./usr/libexec/*" \
 		>> ../tmp/binfiles.txt
 	
 	# strip binaries and libraries
