@@ -1,0 +1,6 @@
+**.swp
+buildsteps/build/
+buildsteps/out/
+buildsteps/destdir/
+buildsteps/sources/
+buildsteps/tmp

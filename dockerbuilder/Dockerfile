@@ -1,0 +1,152 @@
+FROM ubuntu:focal
+
+RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make
+
+ENV kernel_version=5.8.15
+ENV binutils_version=2.35.1
+ENV mpfr_version=4.1.0
+ENV mpc_version=1.2.0
+ENV gmp_version=6.2.0
+ENV gcc_version=10.2.0
+ENV glibc_version=2.32
+
+ENV CLFS=/clfs
+WORKDIR /sources
+
+RUN wget \
+	ftp://sourceware.org/pub/binutils/releases/binutils-${binutils_version}.tar.xz \
+	https://gforge.inria.fr/frs/download.php/file/38345/mpfr-${mpfr_version}.tar.xz \
+	https://ftp.gnu.org/gnu/mpc/mpc-${mpc_version}.tar.gz \
+	https://gmplib.org/download/gmp/gmp-${gmp_version}.tar.xz \
+	ftp://ftp.mpi-sb.mpg.de/pub/gnu/mirror/gcc.gnu.org/pub/gcc/releases/gcc-${gcc_version}/gcc-${gcc_version}.tar.xz \
+	https://ftp.gnu.org/gnu/glibc/glibc-${glibc_version}.tar.xz \
+	https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${kernel_version}.tar.xz \
+    -P /sources
+
+ENV LC_ALL=POSIX 
+ENV PATH=/clfs/cross-tools/bin:/bin:/usr/bin
+ENV CLFS_HOST=x86_64-pc-linux-gnu
+ENV CLFS_TARGET=aarch64-linux-gnu
+ENV CLFS_ARCH=arm64
+ENV CLFS_ARM_ARCH=armv8
+RUN mkdir -p $CLFS/cross-tools/${CLFS_TARGET} && ln -sfv ${CLFS}/cross-tools/ ${CLFS}/cross-tools/${CLFS_TARGET}/usr
+
+# 1. build kernel headers0
+RUN tar xvpf linux-${kernel_version}.tar.xz
+WORKDIR /sources/linux-${kernel_version}
+RUN make mrproper
+ENV ARCH=${CLFS_ARCH}
+RUN make headers_check
+RUN apt install -y --no-install-recommends gcc libc6-dev
+RUN make INSTALL_HDR_PATH=${CLFS}/cross-tools/${CLFS_TARGET} headers_install
+WORKDIR /sources
+
+# 2. build binutils
+RUN tar xvpf binutils-${binutils_version}.tar.xz
+RUN mkdir binutils-build
+WORKDIR /sources/binutils-build
+RUN ../binutils-${binutils_version}/configure \
+	--prefix=${CLFS}/cross-tools \
+	--target=${CLFS_TARGET} \
+	--with-sysroot=${CLFS}/cross-tools/${CLFS_TARGET} \
+	--disable-nls \
+	--disable-multilib
+RUN make configure-host
+RUN make -j16
+RUN make install
+WORKDIR /sources
+
+# 3. GCC static
+RUN tar xvpf gcc-${gcc_version}.tar.xz
+WORKDIR /sources/gcc-${gcc_version}
+RUN tar xvpf ../mpfr-${mpfr_version}.tar.xz && mv mpfr-${mpfr_version} mpfr
+RUN tar xvpf ../gmp-${gmp_version}.tar.xz && mv gmp-${gmp_version} gmp
+RUN tar xvpf ../mpc-${mpc_version}.tar.gz && mv mpc-${mpc_version} mpc
+WORKDIR /sources
+RUN mkdir gcc-build
+WORKDIR /sources/gcc-build
+RUN apt install -y g++
+ENV CLFS_FLOAT=hard
+ENV CLFS_ARM_ARCH=armv8-a
+RUN ../gcc-${gcc_version}/configure \
+  --prefix=${CLFS}/cross-tools \
+  --build=${CLFS_HOST} \
+  --host=${CLFS_HOST} \
+  --target=${CLFS_TARGET} \
+  --with-sysroot=${CLFS}/cross-tools/${CLFS_TARGET} \
+  --disable-nls \
+  --disable-shared \
+  --without-headers \
+  --with-newlib \
+  --disable-decimal-float \
+  --disable-libgomp \
+  --disable-libmudflap \
+  --disable-libssp \
+  --disable-libatomic \
+  --disable-libquadmath \
+  --disable-threads \
+  --enable-languages=c \
+  --disable-multilib \
+  --with-mpfr-include=$(pwd)/../gcc-${gcc_version}/mpfr/src \
+  --with-mpfr-lib=$(pwd)/mpfr/src/.libs \
+  --with-arch=${CLFS_ARM_ARCH}
+RUN make all-gcc all-target-libgcc -j16
+RUN make install-gcc install-target-libgcc -j16
+WORKDIR /sources
+
+# 4. glibc
+RUN tar xvpf glibc-${glibc_version}.tar.xz
+WORKDIR /sources/glibc-build
+RUN apt remove --purge g++ g++-9 -y 
+RUN ../glibc-${glibc_version}/configure \
+	CROSS_COMPILE=${CLFS_TARGET}- \
+	CXX= \
+	--prefix=${CLFS}/cross-tools/${CLFS_TARGET} \
+	--build=${CLFS_HOST} \
+	--host=${CLFS_TARGET}
+RUN make -j16
+RUN make install
+
+# 5. GCC final
+WORKDIR /sources
+RUN rm -rf gcc-build
+WORKDIR /sources/gcc-build
+RUN apt install -y g++
+RUN ../gcc-${gcc_version}/configure \
+	--prefix=${CLFS}/cross-tools \
+	--build=${CLFS_HOST} \
+	--host=${CLFS_HOST} \
+	--target=${CLFS_TARGET} \
+	--with-sysroot=${CLFS}/cross-tools/${CLFS_TARGET} \
+	--disable-nls \
+	--enable-languages=c,c++ \
+	--enable-c99 \
+	--enable-long-long \
+	--enable-shared \
+	--disable-libmudflap \
+	--disable-multilib \
+	--disable-libsanitizer \
+	--with-mpfr-include=$(pwd)/../gcc-${gcc_version}/mpfr/src \
+	--with-mpfr-lib=$(pwd)/mpfr/src/.libs \
+	--with-arch=${CLFS_ARM_ARCH}
+RUN make -j16
+RUN make install
+
+# 6. remove old gcc to make it less probable to accidentaly not cross compile
+ENV CROSS_COMPILE=${CLFS_TARGET}-
+RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
+RUN apt install vim pkg-config libtool -y && apt autoremove -y
+
+ENV CC="${CLFS_TARGET}-gcc --sysroot=${CLFS}/targetfs"
+ENV CXX="${CLFS_TARGET}-g++ --sysroot=${CLFS}/targetfs"
+ENV AR="${CLFS_TARGET}-ar"
+ENV AS="${CLFS_TARGET}-as"
+ENV LD="${CLFS_TARGET}-ld --sysroot=${CLFS}/targetfs"
+ENV RANLIB="${CLFS_TARGET}-ranlib"
+ENV READELF="${CLFS_TARGET}-readelf"
+ENV STRIP="${CLFS_TARGET}-strip"
+ENV PKG_CONFIG_PATH=
+ENV PKG_CONFIG_LIBDIR=${CLFS}/targetfs/usr/lib/pkgconfig
+ENV PKG_CONFIG_SYSROOT_DIR=${CLFS}
+
+RUN mkdir -p /clfs/targetfs
