@@ -131,8 +131,8 @@ RUN ../gcc-${gcc_version}/configure \
 	--with-arch=${CLFS_ARM_ARCH}
 RUN make -j16
 RUN make install
+RUN cat /sources/gcc-${gcc_version}/gcc/limitx.h /sources/gcc-${gcc_version}/gcc/glimits.h /sources/gcc-${gcc_version}/gcc/limity.h > /clfs/cross-tools/lib/gcc/aarch64-linux-gnu/${gcc_version}/include-fixed/limits.h
 
-# 6. remove old gcc to make it less probable to accidentaly not cross compile
 ENV CROSS_COMPILE=${CLFS_TARGET}-
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN apt install vim pkg-config libtool -y && apt autoremove -y
