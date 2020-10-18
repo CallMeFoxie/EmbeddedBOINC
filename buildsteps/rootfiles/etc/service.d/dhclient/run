@@ -1,5 +1,5 @@
 #!/bin/sh
 
-ifname=$(basename $(pwd))
+ifname=$(basename $(pwd) | cut -d"-" -f2-)
 
 exec /sbin/udhcpc -f -i "${ifname}"

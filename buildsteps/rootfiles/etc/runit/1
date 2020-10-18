@@ -25,7 +25,7 @@ for i in $(ls /etc/sysconfig/network/); do
 
 		case $CONFIGURE in
 			dhcp)
-				cp -rp /etc/service.d/dhclient /etc/service/${iface}
+				cp -rp /etc/service.d/dhclient /etc/service/udhcpc-${iface}
 				;;
 			none)
 				echo "UEBO: ${iface}: not configuring"
@@ -49,7 +49,7 @@ echo "UEBO: Do the funny stuff like load modules and set up network etc"
 echo "UEBO: Setting up all available gettys based on /proc/consoles"
 for i in $(cat /proc/consoles | cut -d" " -f1); do
         echo "UBO: Preparing getty on $i"
-        cp -rp /etc/service.d/getty /etc/service/${i}
+        cp -rp /etc/service.d/getty /etc/service/tty-${i}
 done
 
 echo "UEBO: Setting hostname"
@@ -58,6 +58,6 @@ if [ -f /etc/hostname ]; then
 	echo $hostname > /proc/sys/kernel/hostname
 	echo "127.0.0.1 $hostname localhost" > /etc/hosts
 else
-	echo "UEBO" > /proc/sys/kernel/hostname
+	echo "uebo" > /proc/sys/kernel/hostname
 	echo "127.0.0.1 uebo localhost" > /etc/hosts
 fi

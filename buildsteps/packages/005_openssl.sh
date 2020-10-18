@@ -4,7 +4,6 @@ PKGVERSION="1_1_1h"
 PKGNAME="openssl"
 SOURCEFILE="OpenSSL_${PKGVERSION}.tar.gz"
 URL="https://github.com/openssl/openssl/archive/"
-BUILDDEPS=""
 
 build() {
 	export CROSS_COMPILE=

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ "$#" -ne 1 ] || [ ! -d /etc/service/${1} ]; then
+	echo "Unknown service!"
+	exit 111
+fi
+
+exec sv status /etc/service/${1}

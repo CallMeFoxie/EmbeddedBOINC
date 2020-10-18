@@ -21,7 +21,7 @@ package_default() {
 	find . \
 		-path "./usr/share/man/*" -o \
 		-path "./usr/share/doc/*" \
-		>> ../tmp/helpfiles.txt
+		| sort | uniq > ../tmp/helpfiles.txt
 	# dev files
 	find . \
 		-path "./usr/include*" -o \
@@ -32,15 +32,16 @@ package_default() {
 		-path "./lib64/*.a" -o \
 		-path "./usr/lib64/*.o" -o \
 		-path "./usr/lib/*.la" -o \
-		-path "./usr/lib/*/sysdeps/*" \
-		>> ../tmp/devfiles.txt
+		-path "./usr/lib/*/sysdeps/*" -o \
+		-path "./usr/share/aclocal/*" \
+		| sort | uniq > ../tmp/devfiles.txt
 	# lib files
 	find . \
 		-path "./usr/lib/*.so*" -o \
 		-path "./lib/*.so*" -o \
 		-path "./lib64/*.so*" -o \
 		-path "./usr/lib64/*.so*" \
-		>> ../tmp/libfiles.txt
+		| sort | uniq > ../tmp/libfiles.txt
 	# bin files
 	find . \
 		-path "./usr/bin/*" -o \
@@ -48,9 +49,8 @@ package_default() {
 		-path "./usr/sbin/*" -o \
 		-path "./sbin/*" -o \
 		-path "./etc/*" -o \
-		-path "./usr/libexec/*" -o \
-		-executable \
-		>> ../tmp/binfiles.txt
+		-path "./usr/libexec/*" \
+		| sort | uniq > ../tmp/binfiles.txt
 	
 	# strip binaries and libraries
 	for xfile in $(cat ../tmp/binfiles.txt ../tmp/libfiles.txt); do
@@ -60,19 +60,22 @@ package_default() {
 			$STRIP $xfile
 		fi
 	done
-
+	echo ".. packing"
 	for i in help dev lib bin; do
-		[ "$(cat ../tmp/${i}files.txt | sort | uniq | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}.tar.xz"
-		cat ../tmp/${i}files.txt | xargs rm -rf
+		[ "$(cat ../tmp/${i}files.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}.tar.xz"
+		cat ../tmp/${i}files.txt | xargs rm || :
 	done
+	find . -type d -empty -delete
 
-	find . -type f >> ../tmp/leftovers.txt
-	[ "$(cat ../tmp/leftovers.txt | sort | uniq | wc -l)" -ne 0 ] && tar cvT ../tmp/leftovers.txt | xz > "${1}-leftover.tar.xz" || :
+	echo ".. getting leftovers"
+	find . -type f | sort | uniq > ../tmp/leftovers.txt
+	[ "$(cat ../tmp/leftovers.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/leftovers.txt | xz > "${1}-leftover.tar.xz" || :
+	echo ".. DONE"
 }
 
 for pkgfile in $(ls packages | sort -n); do
 	source ./packages/${pkgfile}
-	rm -rf tmp/
+	#rm -rf tmp/
 	echo "==== Working with ${PKGNAME} @ ${PKGVERSION} ===="
 	BUILD=1
 

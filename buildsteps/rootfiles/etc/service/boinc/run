@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if ! getent group boinc; then
+	addgroup -S boinc
+fi
+
+if ! getent passwd boinc; then
+	 adduser -h /var/lib/boinc-client -s /usr/sbin/nologin -G boinc -S -D -H boinc
+fi
+
+mkdir -p /var/lib/boinc-client /etc/boinc-client
+chown -R boinc:boinc /var/lib/boinc-client
+
+for i in cc_config.xml global_prefs_override.xml gui_rpc_auth.cfg remote_hosts.cfg; do
+	touch /etc/boinc-client/${i}
+	if [ ! -L /var/lib/boinc-client/${i} ]; then
+		ln -s /etc/boinc-client/${i} /var/lib/boinc-client/
+		chown boinc:boinc /etc/boinc-client/${i}
+	fi
+done
+
+echo "data_dir=/var/lib/boinc-client" > /etc/boinc-client/config.properties
+
+exec chpst -uboinc /usr/bin/boinc --dir /var/lib/boinc-client

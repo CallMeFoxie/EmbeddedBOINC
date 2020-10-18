@@ -1,5 +1,5 @@
 #!/bin/sh
 
-consolename=$(basename $(pwd))
+consolename=$(basename $(pwd) | cut -d"-" -f2-)
 
 exec /sbin/getty 0 $consolename
