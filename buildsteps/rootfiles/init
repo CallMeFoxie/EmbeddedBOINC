@@ -1,0 +1,24 @@
+#!/bin/sh
+
+
+
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -o size=1024k -t tmpfs none /run
+mount -o size=8192k -t tmpfs none /tmp
+mkdir -p /var/log
+mount -o size=32768k -t tmpfs none /var/log
+mount -t devtmpfs none /dev
+
+echo 0 > /proc/sys/kernel/printk
+
+echo "Starting up Boinc unofficial embedded linux"
+echo -n "Platform: "
+uname -a
+
+mkdir /dev/pts
+mkdir /dev/shm
+mount -t devpts -o gid=4,mode=620 none /dev/pts
+mount -t tmpfs none /dev/shm
+
+exec /sbin/runit-init

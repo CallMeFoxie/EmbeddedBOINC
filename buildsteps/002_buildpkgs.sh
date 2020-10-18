@@ -48,7 +48,8 @@ package_default() {
 		-path "./usr/sbin/*" -o \
 		-path "./sbin/*" -o \
 		-path "./etc/*" -o \
-		-path "./usr/libexec/*" \
+		-path "./usr/libexec/*" -o \
+		-executable \
 		>> ../tmp/binfiles.txt
 	
 	# strip binaries and libraries

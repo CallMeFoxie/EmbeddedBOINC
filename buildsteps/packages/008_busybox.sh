@@ -11,4 +11,6 @@ build() {
 	make -j16
 	make install
 	mv _install/* ${DESTDIR}
+	mkdir -p ${DESTDIR}/etc/udhcpc/
+	cp examples/udhcp/simple.script ${DESTDIR}/etc/udhcpc/simple.script
 }

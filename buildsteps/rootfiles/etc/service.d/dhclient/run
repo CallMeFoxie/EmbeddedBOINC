@@ -1,0 +1,5 @@
+#!/bin/sh
+
+ifname=$(basename $(pwd))
+
+exec /sbin/udhcpc -f -i "${ifname}"

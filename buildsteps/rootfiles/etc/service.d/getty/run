@@ -1,0 +1,5 @@
+#!/bin/sh
+
+consolename=$(basename $(pwd))
+
+exec /sbin/getty 0 $consolename

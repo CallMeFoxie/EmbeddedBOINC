@@ -23,9 +23,9 @@ build() {
 	cd src
 	make
 	make runsvstat runsvctrl svwaitup svwaitdown
-	mkdir -p ${DESTDIR}/bin
+	mkdir -p ${DESTDIR}/sbin
 	for destfile in $(cat Makefile | grep -i "\.\/load" | egrep -v "try|chkshsgr" | awk '{print $2}'); do
-		cp -v $destfile ${DESTDIR}/bin/
+		cp -v $destfile ${DESTDIR}/sbin/
 	done
 }
 
