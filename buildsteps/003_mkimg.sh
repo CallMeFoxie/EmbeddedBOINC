@@ -5,7 +5,7 @@ mkdir -p rootimage
 
 cp -rpd rootfiles/* rootimage/
 
-for i in glibc libgcc runit curl busybox zlib openssl boinc; do
+for i in glibc libgcc runit curl busybox zlib openssl boinc dropbear; do
 	tar xvpf out/${i}*-bin.tar.xz -C rootimage/
 	tar xvpf out/${i}*-lib.tar.xz -C rootimage/
 done
