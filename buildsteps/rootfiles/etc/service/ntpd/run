@@ -1,0 +1,9 @@
+#!/bin/sh
+
+peers=""
+
+if [ ! -f "/etc/ntp.conf" ]; then
+	peers="-p 0.cz.pool.ntp.org -p 1.cz.pool.ntp.org -p 2.cz.pool.ntp.org -p 3.cz.pool.ntp.org"
+fi
+
+exec /usr/sbin/ntpd -n ${peers}
