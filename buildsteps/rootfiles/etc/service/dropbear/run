@@ -1,3 +1,10 @@
 #!/bin/sh
+exec 2>&1
 
-exec /usr/sbin/dropbear -R -F -g
+if [ ! -f /etc/dropbear/ed25519_hostkey ]; then
+	mkdir -p /etc/dropbear
+	dropbearkey -t ed25519 -f /etc/dropbear/ed25519_hostkey
+fi
+
+
+exec /usr/sbin/dropbear -R -F

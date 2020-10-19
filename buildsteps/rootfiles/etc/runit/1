@@ -44,8 +44,6 @@ for i in $(ls /etc/sysconfig/network/); do
 	)
 done
 
-echo "UEBO: Do the funny stuff like load modules and set up network etc"
-
 echo "UEBO: Setting up all available gettys based on /proc/consoles"
 for i in $(cat /proc/consoles | cut -d" " -f1); do
         echo "UBO: Preparing getty on $i"
@@ -61,3 +59,6 @@ else
 	echo "uebo" > /proc/sys/kernel/hostname
 	echo "127.0.0.1 uebo localhost" > /etc/hosts
 fi
+
+echo "UEBO: Preparing user runtime"
+touch /var/log/lastlog
