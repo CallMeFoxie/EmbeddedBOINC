@@ -12,38 +12,6 @@ for i in $(cat /etc/sysconfig/modules); do
 	modprobe ${i}
 done
 
-echo "UEBO: Configuring network"
-for i in $(ls /etc/sysconfig/network/); do
-	iface=$i
-	(
-		source /etc/sysconfig/network/$iface
-		ip link set dev $iface up
-		if [ x"${HWADDR}" != "x" ]; then
-			echo "UEBO: ${iface}: overriding MAC address"
-			ip link set "${iface}" address "${HWADDR}"
-		fi
-
-		case $CONFIGURE in
-			dhcp)
-				cp -rp /etc/service.d/dhclient /etc/service/udhcpc-${iface}
-				;;
-			none)
-				echo "UEBO: ${iface}: not configuring"
-				;;
-			static)
-				echo "UEBO: ${iface}: setting static IP"
-				ip address add ${IPADDR} dev $iface
-				if [ x"${GATEWAY}" != "x" ]; then
-					ip route add default via ${GATEWAY} dev ${iface}
-				fi
-				;;
-			*)
-				echo "UEBO: ${iface}: unknown configure option ${CONFIGURE}"
-				;;
-		esac
-	)
-done
-
 echo "UEBO: Setting up all available gettys based on /proc/consoles"
 for i in $(cat /proc/consoles | cut -d" " -f1); do
         echo "UBO: Preparing getty on $i"
