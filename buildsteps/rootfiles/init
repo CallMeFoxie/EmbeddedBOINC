@@ -10,6 +10,16 @@ mkdir -p /var/log
 mount -o size=32768k -t tmpfs none /var/log
 mount -t devtmpfs none /dev
 
+mkdir -p /sys/fs/cgroup
+mount -t tmpfs none -o rw,nosuid,nodev,noexec,mode=755 /sys/fs/cgroup
+
+for i in cpu memory; do
+	mkdir /sys/fs/cgroup/${i}
+	mount -t cgroup ${i} -o ${i} /sys/fs/cgroup/${i}
+done
+
+mount -o remount,ro /sys/fs/cgroup
+
 echo 0 > /proc/sys/kernel/printk
 
 echo "Starting up Unofficial Embedded Boinc linux"

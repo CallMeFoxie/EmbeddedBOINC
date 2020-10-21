@@ -21,4 +21,11 @@ done
 
 echo "data_dir=/var/lib/boinc-client" > /etc/boinc-client/config.properties
 
-exec chpst -uboinc /usr/bin/boinc --dir /var/lib/boinc-client
+if [ ! -d /sys/fs/cgroup/memory/boinc ]; then
+	mkdir /sys/fs/cgroup/memory/boinc
+fi
+
+memlimit=$(($(cat /proc/meminfo | grep MemTotal | awk '{print $2}')*900))
+echo $memlimit > /sys/fs/cgroup/memory/boinc/memory.limit_in_bytes
+
+exec cgexec -g memory:boinc chpst -uboinc /usr/bin/boinc --dir /var/lib/boinc-client
