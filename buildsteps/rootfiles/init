@@ -1,7 +1,5 @@
 #!/bin/sh
 
-
-
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mount -o size=1024k -t tmpfs none /run
@@ -30,5 +28,38 @@ mkdir /dev/pts
 mkdir /dev/shm
 mount -t devpts -o gid=4,mode=620 none /dev/pts
 mount -t tmpfs none /dev/shm
+
+echo "UEBO Init: looking for all possible local storages..."
+for i in $(ls /dev/mmcblk* /dev/sd* /dev/hd*); do
+	e2fsck ${i} -p
+	echo -n "> ${i} ... "
+	label=$(e2label ${i} || "")
+	echo -n "${label} "
+	case x"${label}" in
+		conf)
+			mkdir -p /conf
+			mount ${i} /conf
+			echo "-> /conf"
+			;;
+		boinc)
+			mkdir -p /var/lib/boinc-client
+			mount ${i} /var/lib/boinc-client
+			echo" -> /var/lib/boinc-client"
+			;;
+		*)
+			echo "skipped"
+			;;
+	esac
+done
+
+if [ -d /conf ]; then
+	echo "UEBO: Linking over all permanent config files from /conf to /etc"
+	for i in $(find /conf -type f); do
+		oldpath=$(echo ${i} | sed 's/^\/conf\///')
+		rm /etc/${oldpath} || :
+		mkdir -p /etc/$(dirname ${oldpath})
+		ln -sfv /conf/${oldpath} /etc/${oldpath}
+	done
+fi
 
 exec /sbin/runit-init

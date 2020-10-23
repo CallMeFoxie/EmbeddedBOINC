@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# check that boinc-client is actually mounted from a permanent storage
+mountpoint /var/lib/boinc-client -q || exit 1
+
 if ! getent group boinc; then
 	addgroup -S boinc
 fi

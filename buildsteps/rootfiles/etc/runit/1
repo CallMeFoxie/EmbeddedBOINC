@@ -12,6 +12,9 @@ for i in $(cat /etc/sysconfig/modules); do
 	modprobe ${i}
 done
 
+echo "UEBO: Removing kernel module dir to save lots of memory"
+rm -rf /lib/modules/*
+
 echo "UEBO: Setting up all available gettys based on /proc/consoles"
 for i in $(cat /proc/consoles | cut -d" " -f1); do
         echo "UBO: Preparing getty on $i"

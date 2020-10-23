@@ -58,7 +58,7 @@ package_default() {
 	# strip binaries and libraries
 	for xfile in $(cat ../tmp/binfiles.txt ../tmp/libfiles.txt); do
 		isstrippable=$(file $xfile | grep "not stripped" || :)
-		if [ ! -z "${isstrippable}" ]; then
+		if [ ! -z "${isstrippable}" ] && [ x"${DONTSTRIP}" = "x" ]; then
 			echo "> stripping $xfile"
 			$STRIP $xfile
 		fi
