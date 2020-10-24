@@ -1,0 +1,12 @@
+#!/bin/sh
+
+exec 2>&1
+
+if [ ! -d /sys/fs/cgroup/memory/prometheus ]; then
+	mkdir /sys/fs/cgroup/memory/prometheus
+fi
+
+memlimit=$((40*1024*1024)) # 40MB?
+echo $memlimit > /sys/fs/cgroup/memory/prometheus/memory.limit_in_bytes
+
+exec cgexec -g memory:prometheus /usr/bin/node_exporter --collector.cpu.info  --no-collector.arp --no-collector.bcache --no-collector.bonding  --no-collector.btrfs --no-collector.conntrack  --no-collector.edac  --no-collector.filefd --no-collector.entropy --no-collector.infiniband --collector.ipvs --no-collector.mdadm --no-collector.netclass --no-collector.nfs --no-collector.nfsd --no-collector.powersupplyclass --no-collector.rapl --collector.runit

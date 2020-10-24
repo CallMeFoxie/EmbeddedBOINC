@@ -22,6 +22,8 @@ Just look into `packages/` directory. Not all are included by default though (fo
 
 The size of the whole initramfs.gz after packing is 25MB as of right now with Prometheus exporters (node & boinc) included. If you add in default debian 4.19 aarch64 modules it goes upto 77MB! You're better off baking the current 5.9 kernel with custom set of modules instead. Remember however that all modules are after loading **REMOVED** from the initramfs to save memory for BOINC! Make sure you specify all the modules you need in /etc/modules (or /conf/modules for that purpose).
 
+Do note that the initramfs eats (as of this commit) roughly 64MB RAM when running. That's still pretty nice even for 512MB devices! More so considering that just Prometheus node exporter takes almost 13MB and BOINC exporter 5.2MB.
+
 ## Permanent storage
 
 The boot process looks for partitions with labels. There are as of right now two of them:

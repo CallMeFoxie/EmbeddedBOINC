@@ -1,0 +1,16 @@
+#!/bin/sh
+
+exec 2>&1
+
+if [ ! -e /etc/boinc-client/gui_rpc_auth.cfg ]; then
+	exit 1
+fi
+
+if [ ! -d /sys/fs/cgroup/memory/prometheus ]; then
+	mkdir /sys/fs/cgroup/memory/prometheus
+fi
+
+memlimit=$((40*1024*1024)) # 40MB?
+echo $memlimit > /sys/fs/cgroup/memory/prometheus/memory.limit_in_bytes
+
+exec cgexec -g memory:prometheus /usr/bin/boinc_exporter "$(cat /etc/boinc-client/gui_rpc_auth.cfg)"

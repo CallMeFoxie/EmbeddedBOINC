@@ -9,6 +9,7 @@ ENV mpc_version=1.2.0
 ENV gmp_version=6.2.0
 ENV gcc_version=10.2.0
 ENV glibc_version=2.32
+ENV golang_version=1.14.10
 
 ENV CLFS=/clfs
 WORKDIR /sources
@@ -21,6 +22,7 @@ RUN wget \
 	ftp://ftp.mpi-sb.mpg.de/pub/gnu/mirror/gcc.gnu.org/pub/gcc/releases/gcc-${gcc_version}/gcc-${gcc_version}.tar.xz \
 	https://ftp.gnu.org/gnu/glibc/glibc-${glibc_version}.tar.xz \
 	https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${kernel_version}.tar.xz \
+	https://golang.org/dl/go${golang_version}.linux-amd64.tar.gz \
     -P /sources
 
 ENV LC_ALL=POSIX 
@@ -137,6 +139,11 @@ ENV CROSS_COMPILE=${CLFS_TARGET}-
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN apt install vim pkg-config libtool -y && apt autoremove -y
 
+WORKDIR /sources2/
+RUN tar xvpf go${golang_version}.linux-amd64.tar.gz
+ENV PATH=/sources2/go/bin:$PATH
+ENV GOROOT=/sources2/go/
+
 ENV CC="${CLFS_TARGET}-gcc --sysroot=${CLFS}/targetfs"
 ENV CXX="${CLFS_TARGET}-g++ --sysroot=${CLFS}/targetfs"
 ENV AR="${CLFS_TARGET}-ar"
@@ -148,5 +155,7 @@ ENV STRIP="${CLFS_TARGET}-strip"
 ENV PKG_CONFIG_PATH=
 ENV PKG_CONFIG_LIBDIR=${CLFS}/targetfs/usr/lib/pkgconfig
 ENV PKG_CONFIG_SYSROOT_DIR=${CLFS}
+ENV GOOS=linux
+ENV GOARCH=arm64
 
 RUN mkdir -p /clfs/targetfs

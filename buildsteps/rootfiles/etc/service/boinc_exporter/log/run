@@ -1,0 +1,8 @@
+#!/bin/sh
+
+svcname=$(basename $(dirname $(pwd)))
+
+mkdir -p /var/log/${svcname}/
+chmod 0766 /var/log/${svcname}/
+
+exec svlogd -tt /var/log/${svcname}/
