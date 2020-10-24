@@ -1,1 +1,12 @@
 e1000
+dwmac-sunxi
+dwmac_sun8i
+dw_mmc
+sdhci
+spi-nor
+mtd
+sst25l
+mtd_dataflash
+spi-sun6i
+spi-sun4i
+spidev

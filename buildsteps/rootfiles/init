@@ -29,6 +29,11 @@ mkdir /dev/shm
 mount -t devpts -o gid=4,mode=620 none /dev/pts
 mount -t tmpfs none /dev/shm
 
+echo "UEBO: Loading kernel modules"
+for i in $(cat /etc/sysconfig/modules); do
+        modprobe ${i}
+done
+
 echo "UEBO Init: looking for all possible local storages..."
 for i in $(ls /dev/mmcblk* /dev/sd* /dev/hd*); do
 	e2fsck ${i} -p
@@ -36,15 +41,15 @@ for i in $(ls /dev/mmcblk* /dev/sd* /dev/hd*); do
 	label=$(e2label ${i} || "")
 	echo -n "${label} "
 	case x"${label}" in
-		conf)
+		xconf)
 			mkdir -p /conf
 			mount ${i} /conf
 			echo "-> /conf"
 			;;
-		boinc)
+		xboinc)
 			mkdir -p /var/lib/boinc-client
 			mount ${i} /var/lib/boinc-client
-			echo" -> /var/lib/boinc-client"
+			echo "-> /var/lib/boinc-client"
 			;;
 		*)
 			echo "skipped"
@@ -52,13 +57,10 @@ for i in $(ls /dev/mmcblk* /dev/sd* /dev/hd*); do
 	esac
 done
 
-if [ -d /conf ]; then
-	echo "UEBO: Linking over all permanent config files from /conf to /etc"
-	for i in $(find /conf -type f); do
-		oldpath=$(echo ${i} | sed 's/^\/conf\///')
-		rm /etc/${oldpath} || :
-		mkdir -p /etc/$(dirname ${oldpath})
-		ln -sfv /conf/${oldpath} /etc/${oldpath}
+if [ -f /conf/modules ]; then
+	echo "UEBO: Loading kernel modules stage 2"
+	for i in $(cat /conf/modules); do
+        	modprobe ${i}
 	done
 fi
 

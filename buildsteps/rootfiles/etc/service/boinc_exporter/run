@@ -2,7 +2,7 @@
 
 exec 2>&1
 
-if [ ! -e /etc/boinc-client/gui_rpc_auth.cfg ]; then
+if [ ! -e /var/lib/boinc-client/gui_rpc_auth.cfg ]; then
 	exit 1
 fi
 
@@ -13,4 +13,4 @@ fi
 memlimit=$((40*1024*1024)) # 40MB?
 echo $memlimit > /sys/fs/cgroup/memory/prometheus/memory.limit_in_bytes
 
-exec cgexec -g memory:prometheus /usr/bin/boinc_exporter "$(cat /etc/boinc-client/gui_rpc_auth.cfg)"
+exec cgexec -g memory:prometheus /usr/bin/boinc_exporter "$(cat /var/lib/boinc-client/gui_rpc_auth.cfg)"

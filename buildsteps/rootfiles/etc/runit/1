@@ -7,11 +7,6 @@ chmod 0 /etc/runit/stopit
 echo "UEBO: Generating ld cache"
 ldconfig
 
-echo "UEBO: Loading kernel modules"
-for i in $(cat /etc/sysconfig/modules); do
-	modprobe ${i}
-done
-
 echo "UEBO: Removing kernel module dir to save lots of memory"
 rm -rf /lib/modules/*
 
