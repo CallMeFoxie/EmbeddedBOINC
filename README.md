@@ -47,6 +47,20 @@ Because it felt like it was too much hassle to get into somebody else's scripts 
 
 Right now this is being developed purely against aarch64, maybe eventually also amd64. No other archs are (from me) planned as of right now.
 
+Target devices that are thoroughly tested and developed against:
+- SOPine64 clusterboard (Allwinner A64)
+- Pine64+ (Allwinner A64)
+- QEMU (only for testing and development) (Generic Cortex A53 with AMBA PL011 serial driver + e1000)
+
+Added but not tested:
+- Tanix TX6 (Allwinner H6)
+- Orange Pi 4 (Rockchip rk3399)
+
+To be added when I get a development boards:
+- Raspberry Pi 3
+
+If you want another board supported it should be pretty easy - throw required modules into configs/kernel.conf and rebuild the kernel package and test it out. The rest should be universal. Then feel free to send me a pull request with the device :).
+
 ## License
 
 Probably MIT or whatever you want to do with it. There's no secrets, nothing special, just a bunch of shell scripts.
