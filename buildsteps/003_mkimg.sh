@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf rootimage initramfs initramfs.gz
+rm -rf rootimage initramfs*
 mkdir -p rootimage
 
 cp -rpd rootfiles/* rootimage/
@@ -22,18 +22,18 @@ tar xvpf out/linux-kernel*-lib.tar.xz -C rootimage/
 	cd rootimage
 	find . | fakeroot cpio -H newc -o > ../initramfs
 )
-gzip initramfs
+zstd initramfs
 
 echo "New initramfs for testing is ready!"
-ls -lh initramfs.gz
+ls -lh initramfs.zst
 
-mv initramfs.gz tftproot/
+mv initramfs.zst tftproot/
 cat <<EOF >>tftproot/pxelinux.cfg/default-arm
 timeout 50
 default d-i
         label d-i
         linux /boot/Image
-        initrd /initramfs.gz
+        initrd /initramfs.zst
 EOF
 
 (
