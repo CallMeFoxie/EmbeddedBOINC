@@ -1,8 +1,8 @@
 FROM ubuntu:focal
 
-RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make
+RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo
 
-ENV kernel_version=5.8.15
+ENV kernel_version=5.9.1
 ENV binutils_version=2.35.1
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.0
@@ -10,6 +10,9 @@ ENV gmp_version=6.2.0
 ENV gcc_version=10.2.0
 ENV glibc_version=2.32
 ENV golang_version=1.14.10
+
+# minimum kernel that this glibc will run against, I use 5.6.0 as I have one device that runs this older kernel and I have yet to prepare a newer one
+ENV MINIMUM_KERNEL=5.6.0
 
 ENV CLFS=/clfs
 WORKDIR /sources
@@ -30,14 +33,15 @@ ENV PATH=/clfs/cross-tools/bin:/bin:/usr/bin
 ENV CLFS_HOST=x86_64-pc-linux-gnu
 ENV CLFS_TARGET=aarch64-linux-gnu
 ENV CLFS_ARCH=arm64
-ENV CLFS_ARM_ARCH=armv8
+ENV CLFS_FLOAT=hard
+ENV ARCH=${CLFS_ARCH}
+ENV CLFS_ARM_ARCH=armv8-a
 RUN mkdir -p $CLFS/cross-tools/${CLFS_TARGET} && ln -sfv ${CLFS}/cross-tools/ ${CLFS}/cross-tools/${CLFS_TARGET}/usr
 
 # 1. build kernel headers0
 RUN tar xvpf linux-${kernel_version}.tar.xz
 WORKDIR /sources/linux-${kernel_version}
 RUN make mrproper
-ENV ARCH=${CLFS_ARCH}
 RUN make headers_check
 RUN apt install -y --no-install-recommends gcc libc6-dev
 RUN make INSTALL_HDR_PATH=${CLFS}/cross-tools/${CLFS_TARGET} headers_install
@@ -68,8 +72,6 @@ WORKDIR /sources
 RUN mkdir gcc-build
 WORKDIR /sources/gcc-build
 RUN apt install -y g++
-ENV CLFS_FLOAT=hard
-ENV CLFS_ARM_ARCH=armv8-a
 RUN ../gcc-${gcc_version}/configure \
   --prefix=${CLFS}/cross-tools \
   --build=${CLFS_HOST} \
@@ -105,7 +107,8 @@ RUN ../glibc-${glibc_version}/configure \
 	CXX= \
 	--prefix=${CLFS}/cross-tools/${CLFS_TARGET} \
 	--build=${CLFS_HOST} \
-	--host=${CLFS_TARGET}
+	--host=${CLFS_TARGET} \
+	--enable-kernel=${MINIMUM_KERNEL}
 RUN make -j16
 RUN make install
 
@@ -133,16 +136,16 @@ RUN ../gcc-${gcc_version}/configure \
 	--with-arch=${CLFS_ARM_ARCH}
 RUN make -j16
 RUN make install
-RUN cat /sources/gcc-${gcc_version}/gcc/limitx.h /sources/gcc-${gcc_version}/gcc/glimits.h /sources/gcc-${gcc_version}/gcc/limity.h > /clfs/cross-tools/lib/gcc/aarch64-linux-gnu/${gcc_version}/include-fixed/limits.h
+RUN cat /sources/gcc-${gcc_version}/gcc/limitx.h /sources/gcc-${gcc_version}/gcc/glimits.h /sources/gcc-${gcc_version}/gcc/limity.h > /clfs/cross-tools/lib/gcc/${CLFS_TARGET}/${gcc_version}/include-fixed/limits.h
 
 ENV CROSS_COMPILE=${CLFS_TARGET}-
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
-RUN apt install vim pkg-config libtool -y && apt autoremove -y
+RUN apt install vim pkg-config libtool patch bc device-tree-compiler -y && apt autoremove -y
 
-WORKDIR /sources2/
+WORKDIR /sources
 RUN tar xvpf go${golang_version}.linux-amd64.tar.gz
-ENV PATH=/sources2/go/bin:$PATH
-ENV GOROOT=/sources2/go/
+ENV PATH=/sources/go/bin:$PATH
+ENV GOROOT=/sources/go/
 
 ENV CC="${CLFS_TARGET}-gcc --sysroot=${CLFS}/targetfs"
 ENV CXX="${CLFS_TARGET}-g++ --sysroot=${CLFS}/targetfs"
@@ -159,3 +162,4 @@ ENV GOOS=linux
 ENV GOARCH=arm64
 
 RUN mkdir -p /clfs/targetfs
+WORKDIR /sources2/

@@ -1,0 +1,38 @@
+From 5fcb4e57eeaa4d670ef4acf5818c6fe16aa0d3d0 Mon Sep 17 00:00:00 2001
+From: Ryan Sundberg <ryan@arctype.co>
+Date: Fri, 14 Jun 2019 07:49:06 +0000
+Subject: [PATCH] Revert to original method to read stable timer registers on
+ A64
+
+https://github.com/longsleep/linux-pine64/commit/a08f5219d240ae0edf93d090ff1fda0a82a6cb3a
+---
+ drivers/clocksource/arm_arch_timer.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index aa4ec53281cea..067a04055df68 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -335,16 +335,17 @@ static u64 notrace arm64_1188873_read_cntvct_el0(void)
+  * number of CPU cycles in 3 consecutive 24 MHz counter periods.
+  */
+ #define __sun50i_a64_read_reg(reg) ({					\
+-	u64 _val;							\
+-	int _retries = 150;						\
++	u64 _old, _new;							\
++	int _retries = 200;						\
+ 									\
+ 	do {								\
+-		_val = read_sysreg(reg);				\
++		_old = read_sysreg(reg);				\
++		_new = read_sysreg(reg);				\
+ 		_retries--;						\
+-	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
++	} while (unlikely(_old != _new) && _retries);			\
+ 									\
+ 	WARN_ON_ONCE(!_retries);					\
+-	_val;								\
++	_new;								\
+ })
+ 
+ static u64 notrace sun50i_a64_read_cntpct_el0(void)

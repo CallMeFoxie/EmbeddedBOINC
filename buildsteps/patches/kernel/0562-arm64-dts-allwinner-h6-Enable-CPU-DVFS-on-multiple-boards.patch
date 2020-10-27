@@ -1,0 +1,18 @@
+diff -Naur linux-5.6.5-old/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts linux-5.6.5-new/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
+--- linux-5.6.5-old/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts	2020-04-21 20:43:06.070000000 +0200
++++ linux-5.6.5-new/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts	2020-04-28 17:12:36.840000001 +0200
+@@ -38,6 +39,14 @@
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
+ 	};
++
++	reg_vcccpu: vcccpu {
++		compatible = "regulator-fixed";
++		regulator-name = "vcccpu";
++		regulator-min-microvolt = <1160000>;
++		regulator-max-microvolt = <1160000>;
++		regulator-always-on;
++	};
+ };
+ 
+ &de {

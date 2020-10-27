@@ -1,0 +1,11 @@
+diff -Naur linux-5.3-rc7-old/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts linux-5.3-rc7-new/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
+--- linux-5.3-rc7-old/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts	2019-09-06 16:53:47.403333341 +0200
++++ linux-5.3-rc7-new/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts	2019-09-06 16:59:19.136666663 +0200
+@@ -151,3 +151,7 @@
+ &usb3phy {
+ 	status = "okay";
+ };
++
++&ths {
++	status = "okay";
++};

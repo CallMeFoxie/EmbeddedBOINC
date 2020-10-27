@@ -1,0 +1,11 @@
+--- a/drivers/regulator/core.c	2020-06-07 22:13:28.854480391 +0200
++++ b/drivers/regulator/core.c	2020-06-07 22:13:35.506433621 +0200
+@@ -3196,7 +3196,7 @@ static int _regulator_set_voltage_time(s
+ 		return rdev->constraints->settling_time_down;
+ 
+ 	if (ramp_delay == 0) {
+-		rdev_dbg(rdev, "ramp_delay not set\n");
++		//rdev_dbg(rdev, "ramp_delay not set\n");
+ 		return 0;
+ 	}
+ 

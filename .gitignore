@@ -4,6 +4,7 @@ buildsteps/out/
 buildsteps/destdir/
 buildsteps/sources/
 buildsteps/tmp
-buildsteps/initramfs.gz
 buildsteps/rootimage
-buildsteps/rootfiles/lib/modules/*
+buildsteps/initramfs.*
+buildsteps/tftproot/
+buildsteps/u-boot.bin

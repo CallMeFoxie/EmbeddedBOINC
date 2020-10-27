@@ -40,7 +40,8 @@ package_default() {
 		-path "./usr/lib/*.so*" -o \
 		-path "./lib/*.so*" -o \
 		-path "./lib64/*.so*" -o \
-		-path "./usr/lib64/*.so*" \
+		-path "./usr/lib64/*.so*" -o \
+		-path "./lib/modules/*" \
 		| sort | uniq > ../tmp/libfiles.txt
 	# bin files
 	find . \
@@ -52,12 +53,14 @@ package_default() {
 		-path "./usr/libexec/*" -o \
 		-path "./usr/share/terminfo/*" -o \
 		-path "./usr/share/tabset/*" -o \
-		-path "./usr/share/gdb/*" \
+		-path "./usr/share/gdb/*" -o \
+		-path "./boot/*" \
 		| sort | uniq > ../tmp/binfiles.txt
 	
 	# strip binaries and libraries
 	for xfile in $(cat ../tmp/binfiles.txt ../tmp/libfiles.txt); do
 		isstrippable=$(file $xfile | grep "not stripped" || :)
+		DONTSTRIP=${DONTSTRIP:-""}
 		if [ ! -z "${isstrippable}" ] && [ x"${DONTSTRIP}" = "x" ]; then
 			echo "> stripping $xfile"
 			$STRIP $xfile
@@ -130,7 +133,7 @@ for pkgfile in $(ls packages | sort -n); do
 	fi
 	unset -f unpack
 	unset -f package
-	unset PKGPATH haspackaging hasunpack
+	unset PKGPATH haspackaging hasunpack SOURCEFILE URL
 
 	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib.tar.xz" -C ${TARGETFS} || :
 	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev.tar.xz" -C ${TARGETFS} || :
