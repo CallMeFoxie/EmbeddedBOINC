@@ -17,8 +17,8 @@ for i in $(cat /proc/consoles | cut -d" " -f1); do
 done
 
 echo "UEBO: Setting hostname"
-if [ -f /etc/hostname ]; then
-	hostname=$(cat /etc/hostname)
+if [ -f /conf/hostname ]; then
+	hostname=$(cat /conf/hostname)
 	echo $hostname > /proc/sys/kernel/hostname
 	echo "127.0.0.1 $hostname localhost" > /etc/hosts
 else

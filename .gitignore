@@ -5,6 +5,6 @@ buildsteps/destdir/
 buildsteps/sources/
 buildsteps/tmp
 buildsteps/rootimage
-buildsteps/initramfs.*
+buildsteps/initramfs*
 buildsteps/tftproot/
 buildsteps/u-boot.bin
