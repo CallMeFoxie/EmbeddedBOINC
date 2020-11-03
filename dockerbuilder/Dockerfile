@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo
+RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev
 
 ENV kernel_version=5.9.1
 ENV binutils_version=2.35.1

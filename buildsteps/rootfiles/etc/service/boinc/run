@@ -15,6 +15,7 @@ mkdir -p /var/lib/boinc-client /etc/boinc-client
 chown -R boinc:boinc /var/lib/boinc-client
 
 echo "data_dir=/var/lib/boinc-client" > /etc/boinc-client/config.properties
+cp /etc/boinc-client/all_projects_list.xml /var/lib/boinc-client/all_projects_list.xml
 
 if [ ! -d /sys/fs/cgroup/memory/boinc ]; then
 	mkdir /sys/fs/cgroup/memory/boinc

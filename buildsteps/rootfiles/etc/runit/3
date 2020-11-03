@@ -11,4 +11,4 @@ sv -w196 force-stop /etc/service/*
 sv exit /etc/service/*
 
 echo 'Shutdown...'
-/sbin/runit-init 6
+/sbin/runit-init $LAST

@@ -10,8 +10,10 @@ build() {
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-server --disable-fcgi --disable-manager
 	make -j16
 	make install DESTDIR=${DESTDIR}
-	mkdir -p ${DESTDIR}/etc/ssl/
+	mkdir -p ${DESTDIR}/etc/ssl/ ${DESTDIR}/etc/boinc-client/
 	cp curl/ca-bundle.crt ${DESTDIR}/etc/ssl/ca-bundle.crt
+	cp win_build/installerv2/redist/all_projects_list.xml ${DESTDIR}/etc/boinc-client/all_projects_list.xml
+	rm -rf ${DESTDIR}/etc/init.d/ ${DESTDIR}/etc/default
 }
 
 unpack() {
