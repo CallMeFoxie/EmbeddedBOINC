@@ -3,7 +3,7 @@
 set -eu
 
 export DESTDIR="$(pwd)/destdir"
-export STRIP="aarch64-linux-gnu-strip -s"
+export STRIP="${CLFS_TARGET}-strip -s"
 
 export TARGETFS="/clfs/targetfs/"
 export TARGETDEV="/clfs/targetdev/"
@@ -58,24 +58,28 @@ package_default() {
 		| sort | uniq > ../tmp/binfiles.txt
 	
 	# strip binaries and libraries
-	for xfile in $(cat ../tmp/binfiles.txt ../tmp/libfiles.txt); do
-		isstrippable=$(file $xfile | grep "not stripped" || :)
-		DONTSTRIP=${DONTSTRIP:-""}
-		if [ ! -z "${isstrippable}" ] && [ x"${DONTSTRIP}" = "x" ]; then
-			echo "> stripping $xfile"
-			$STRIP $xfile
-		fi
-	done
+	DONTSTRIP=${DONTSTRIP:-""}
+	if [ x"${DONTSTRIP}" = "x" ]; then
+		for xfile in $(cat ../tmp/binfiles.txt ../tmp/libfiles.txt); do
+			isstrippable=$(file $xfile | grep "not stripped" || :)
+			if [ ! -z "${isstrippable}" ]; then
+				echo "> stripping $xfile"
+				$STRIP $xfile
+			fi
+		done
+	else
+		echo "Not stripping as requested"
+	fi
 	echo ".. packing"
 	for i in help dev lib bin; do
-		[ "$(cat ../tmp/${i}files.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}.tar.xz"
+		[ "$(cat ../tmp/${i}files.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}.${ARCH}.tar.xz"
 		cat ../tmp/${i}files.txt | xargs rm || :
 	done
 	find . -type d -empty -delete
 
 	echo ".. getting leftovers"
 	find . -type f | sort | uniq > ../tmp/leftovers.txt
-	[ "$(cat ../tmp/leftovers.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/leftovers.txt | xz > "${1}-leftover.tar.xz" || :
+	[ "$(cat ../tmp/leftovers.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/leftovers.txt | xz > "${1}-leftover.${ARCH}.tar.xz" || :
 	echo ".. DONE"
 }
 
@@ -85,7 +89,7 @@ for pkgfile in $(ls packages | sort -n); do
 	echo "==== Working with ${PKGNAME} @ ${PKGVERSION} ===="
 	BUILD=1
 
-	if [ -f "out/${PKGNAME}-${PKGVERSION}-bin.tar.xz" -o -f "out/${PKGNAME}-${PKGVERSION}-lib.tar.xz" ]; then
+	if [ -f "out/${PKGNAME}-${PKGVERSION}-bin.${ARCH}.tar.xz" -o -f "out/${PKGNAME}-${PKGVERSION}-lib.${ARCH}.tar.xz" ]; then
 		BUILD=0
 	fi
 
@@ -133,9 +137,9 @@ for pkgfile in $(ls packages | sort -n); do
 	fi
 	unset -f unpack
 	unset -f package
-	unset PKGPATH haspackaging hasunpack SOURCEFILE URL
+	unset PKGPATH haspackaging hasunpack SOURCEFILE URL DONTSTRIP
 
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib.tar.xz" -C ${TARGETFS} || :
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev.tar.xz" -C ${TARGETFS} || :
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-bin.tar.xz" -C ${TARGETFS} || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib.${ARCH}.tar.xz" -C ${TARGETFS} || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev.${ARCH}.tar.xz" -C ${TARGETFS} || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-bin.${ARCH}.tar.xz" -C ${TARGETFS} || :
 done

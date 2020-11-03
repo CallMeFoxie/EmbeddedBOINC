@@ -6,6 +6,7 @@ SOURCEFILE="${PKGVERSION}.tar.gz"
 URL="https://github.com/BOINC/boinc/archive/client_release/7.16/"
 
 build() {
+	patch -p1 < ../../patches/boinc/fix-hardfp-arm2.patch
 	./_autosetup
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-server --disable-fcgi --disable-manager
 	make -j16

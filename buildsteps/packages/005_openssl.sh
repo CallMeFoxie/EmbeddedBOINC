@@ -7,7 +7,18 @@ URL="https://github.com/openssl/openssl/archive/"
 
 build() {
 	export CROSS_COMPILE=
-	./Configure linux-aarch64 --prefix=/usr
+	case $ARCH in
+		arm)
+			./Configure linux-armv4 --prefix=/usr -march=${CLFS_ARM_ARCH}
+			;;
+		arm64)
+			./Configure linux-aarch64 --prefix=/usr
+			;;
+		*)
+			echo "OpenSSL package: undefined arch ${ARCH}, please add it to the build script and try again."
+			exit 1
+			;;
+	esac
 	make -j16
 	make install DESTDIR=${DESTDIR}
 }

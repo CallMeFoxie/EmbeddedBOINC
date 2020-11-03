@@ -1,0 +1,15 @@
+--- 7.16.11/client/Makefile.am	2020-08-30 10:04:59.000000000 +0200
++++ 7.16.11-fix/client/Makefile.am	2020-11-03 17:29:56.708589036 +0100
+@@ -123,10 +123,10 @@ EXTRA_boinc_client_DEPENDENCIES = libwhe
+ boinc_client_LDADD += libwhetneon.a libwhetvfp.a
+ noinst_LIBRARIES = libwhetneon.a libwhetvfp.a
+ libwhetneon_a_SOURCES = whetstone.cpp
+-libwhetneon_a_CXXFLAGS = $(filter-out -mfpu=vfpv3-d16,$(boinc_client_CXXFLAGS)) -DANDROID_NEON -mfloat-abi=softfp -mfpu=neon
++libwhetneon_a_CXXFLAGS = $(boinc_client_CXXFLAGS)
+ 
+ libwhetvfp_a_SOURCES = whetstone.cpp
+-libwhetvfp_a_CXXFLAGS = $(boinc_client_CXXFLAGS) -DANDROID_VFP -mfloat-abi=softfp -mfpu=vfpv3-d16
++libwhetvfp_a_CXXFLAGS = $(boinc_client_CXXFLAGS)
+ endif
+ 
+ switcher_SOURCES = switcher.cpp

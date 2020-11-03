@@ -1,8 +1,9 @@
 FROM ubuntu:focal
 
-RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev
+RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
+RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.9.1
+ENV kernel_version=5.9.3
 ENV binutils_version=2.35.1
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.0
@@ -11,8 +12,7 @@ ENV gcc_version=10.2.0
 ENV glibc_version=2.32
 ENV golang_version=1.14.10
 
-# minimum kernel that this glibc will run against, I use 5.6.0 as I have one device that runs this older kernel and I have yet to prepare a newer one
-ENV MINIMUM_KERNEL=5.6.0
+ENV MINIMUM_KERNEL=5.9.0
 
 ENV CLFS=/clfs
 WORKDIR /sources
@@ -139,7 +139,6 @@ RUN make install
 RUN cat /sources/gcc-${gcc_version}/gcc/limitx.h /sources/gcc-${gcc_version}/gcc/glimits.h /sources/gcc-${gcc_version}/gcc/limity.h > /clfs/cross-tools/lib/gcc/${CLFS_TARGET}/${gcc_version}/include-fixed/limits.h
 
 ENV CROSS_COMPILE=${CLFS_TARGET}-
-RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN apt install vim pkg-config libtool patch bc device-tree-compiler -y && apt autoremove -y
 
 WORKDIR /sources
@@ -161,5 +160,8 @@ ENV PKG_CONFIG_SYSROOT_DIR=${CLFS}
 ENV GOOS=linux
 ENV GOARCH=arm64
 
+ENV IS64=64
+
 RUN mkdir -p /clfs/targetfs
 WORKDIR /sources2/
+

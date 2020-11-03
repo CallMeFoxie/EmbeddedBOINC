@@ -17,8 +17,8 @@ build() {
 	cp src/iopause.h2 src/iopause.h
 	cp src/select.h2 src/select.h
 	cp src/uint64.h2 src/uint64.h
-	echo "aarch64-linux-gnu-gcc -O2 -Wall --sysroot=/" > src/conf-cc
-	echo "aarch64-linux-gnu-gcc -s --sysroot=/" > src/conf-ld
+	echo "${CLFS_TARGET}-gcc -O2 -Wall --sysroot=/" > src/conf-cc
+	echo "${CLFS_TARGET}-gcc -s --sysroot=/" > src/conf-ld
 	sed -i src/Makefile -e "237d"
 	cd src
 	make

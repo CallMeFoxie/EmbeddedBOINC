@@ -43,21 +43,27 @@ Because it felt like it was too much hassle to get into somebody else's scripts 
 
 `qemu-system-aarch64 -m 1024 -machine virt -cpu cortex-a53 -bios u-boot.bin -nographic -device e1000,netdev=mynet0 -netdev user,id=mynet0,tftp=/var/lib/tftpboot/,hostfwd=tcp::5555-:22` is one way... or just boot directly on some node :)
 
-## Tested platforms
+## Supported platforms platforms
 
-Right now this is being developed purely against aarch64, maybe eventually also amd64. No other archs are (from me) planned as of right now.
+Right now this is being developed against aarch64 and armhf, maybe eventually also amd64. No other archs are (from me) planned as of right now.
 
 Target devices that are thoroughly tested and developed against:
-- SOPine64 clusterboard (Allwinner A64)
-- Pine64+ (Allwinner A64)
-- QEMU (only for testing and development) (Generic Cortex A53 with AMBA PL011 serial driver + e1000)
+- SOPine64 clusterboard (Allwinner A64, arm64)
+- Pine64+ (Allwinner A64, arm64)
+- QEMU (only for testing and development) (Generic Cortex A53 with AMBA PL011 serial driver + e1000, arm64)
 
 Added but not tested:
-- Tanix TX6 (Allwinner H6)
-- Orange Pi 4 (Rockchip rk3399)
+- Tanix TX6 (Allwinner H6, arm64)
+- Orange Pi 4 (Rockchip rk3399, arm64)
 
 To be added when I get a development boards:
-- Raspberry Pi 3
+- Raspberry Pi 3 (arm64)
+- Odroid C1 (armhf)
+
+Boards I would like to support but don't and won't have:
+- Raspberry Pi 1 and 2 (armhf)
+
+Do note that no armhf has been tested on a live device yet as I do not have any in my drawers right now.
 
 If you want another board supported it should be pretty easy - throw required modules into configs/kernel.conf and rebuild the kernel package and test it out. The rest should be universal. Then feel free to send me a pull request with the device :).
 
