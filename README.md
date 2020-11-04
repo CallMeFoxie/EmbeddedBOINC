@@ -67,6 +67,10 @@ Do note that no armhf has been tested on a live device yet as I do not have any 
 
 If you want another board supported it should be pretty easy - throw required modules into configs/kernel.conf and rebuild the kernel package and test it out. The rest should be universal. Then feel free to send me a pull request with the device :).
 
+## 32bit userland on 64bit platform
+
+By default 64bit platforms (arm64) contain only 64bit userland (glibc, ...) but you can request adding 32bit userland (glibc and libgcc) as well by specifying `ADDARCH=arm` environment variable. This will add ~17MB memory usage though!
+
 ## License
 
 Probably MIT or whatever you want to do with it. There's no secrets, nothing special, just a bunch of shell scripts.

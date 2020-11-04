@@ -8,7 +8,7 @@ export STRIP="${CLFS_TARGET}-strip -s"
 export TARGETFS="/clfs/targetfs/"
 export TARGETDEV="/clfs/targetdev/"
 
-export DEFAULT_CONFIGURE_FLAGS="--prefix=/usr --sysconfdir=/etc --localstatedir=/var --build=${CLFS_HOST} --host=${CLFS_TARGET}"
+export DEFAULT_CONFIGURE_FLAGS="--prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${IS64} --build=${CLFS_HOST} --host=${CLFS_TARGET}"
 
 mkdir -p ${TARGETFS} ${TARGETDEV} build sources out
 

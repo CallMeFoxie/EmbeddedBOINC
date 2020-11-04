@@ -7,6 +7,6 @@ URL="https://matt.ucc.asn.au/dropbear/releases/"
 
 build() {
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-syslog 
-	make -j16
-	make install DESTDIR=${DESTDIR}
+	make -j16 PROGRAMS="dropbear dbclient dropbearkey scp"
+	make install DESTDIR=${DESTDIR} PROGRAMS="dropbear dbclient dropbearkey scp"
 }

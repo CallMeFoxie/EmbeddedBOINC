@@ -1,0 +1,12 @@
+--- boinc-client_release-7.16-7.16.11-2/m4/boinc_platform.m4	2020-08-30 10:04:59.000000000 +0200
++++ boinc-client_release-7.16-7.16.11/m4/boinc_platform.m4	2020-11-04 08:34:03.323812580 +0100
+@@ -65,6 +65,9 @@ AC_DEFUN([BOINC_PLATFORM],[
+       i686*linux-android*)
+         boinc_platform="x86-android-linux-gnu"
+         ;;
++      aarch64*linux-gnu)
++        boinc_alt_platform="arm-unknown-linux-gnueabihf"
++	;;
+     esac
+     case "${target}" in
+       i386-pc-os2)
