@@ -34,7 +34,7 @@ if [ x"${ADDARCH}" != "x" ]; then
 		tar xvpf out/${i}*-lib.${ADDARCH}.tar.xz -C rootimage/
 	done
 fi
-echo "> build date: $(date)" >> rootimage/etc/motd >> rotimage/etc/motd
+echo "> build date: $(date)" >> rootimage/etc/motd
 
 rm -rf tftproot
 mkdir -p tftproot/pxelinux.cfg/

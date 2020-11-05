@@ -8,3 +8,4 @@ buildsteps/rootimage
 buildsteps/initramfs*
 buildsteps/tftproot/
 buildsteps/u-boot.bin
+buildsteps/rootfiles/root/.ssh/authorized_keys
