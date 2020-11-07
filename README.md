@@ -67,6 +67,20 @@ Do note that no armhf has been tested on a live device yet as I do not have any 
 
 If you want another board supported it should be pretty easy - throw required modules into configs/kernel.conf and rebuild the kernel package and test it out. The rest should be universal. Then feel free to send me a pull request with the device :).
 
+## Tested BOINC projects
+
+I've been crunching several projects over the recent months and so far all of them (with a bit of tweaks) all work on Embedded BOINC distro. Namely:
+- TN-Grid -- aarch64 only
+- Rosetta@Home -- aarch64 required, but apparently requires also armhf glibc + libgcc
+- World Community Grid -- armhf only (or aarch64 with armhf glibc + libgcc)
+- Universe@Home -- armhf only (or aarch64 with armhf glibc + libgcc)
+
+Projects that should work but have not been tested:
+- LHC@Home - should work, waiting for some SixTrack jobs to appear -- aarch64 only
+- Yoyo@Home - should work, but I am not crunching that -- armhf only (or aarch64 with armhf glibc + libgcc)
+- Einstein@Home - should work if you enable beta/testing branch as the mainstream requires ancient libraries -- armhf only (or aarch64 with armhf glibc + libgcc)
+
+
 ## 32bit userland on 64bit platform
 
 By default 64bit platforms (arm64) contain only 64bit userland (glibc, ...) but you can request adding 32bit userland (glibc and libgcc) as well by specifying `ADDARCH=arm` environment variable. This will add ~17MB memory usage though!
