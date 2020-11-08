@@ -10,6 +10,10 @@ export TARGETDEV="/clfs/targetdev/"
 
 export DEFAULT_CONFIGURE_FLAGS="--prefix=/usr --sysconfdir=/etc --localstatedir=/var --libdir=/usr/lib${IS64} --build=${CLFS_HOST} --host=${CLFS_TARGET}"
 
+export CFLAGS="-O2 -pipe"
+export CPPFLAGS="-O2 -pipe"
+export CXXFLAGS="-O2 -pipe"
+
 mkdir -p ${TARGETFS} ${TARGETDEV} build sources out
 
 rm -rf ${TARGETFS}/* ${TARGETDEV}/* build/*
