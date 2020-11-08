@@ -1,7 +1,10 @@
 #!/bin/bash
 
-ARCH=${1:-"arm64"}
-ADDARCH=${ADDARCH:-""}
+set -eu
+
+PLATFORM=${1:-"default-arm64"}
+
+source platform/${PLATFORM}.cfg
 
 rm -rf rootimage initramfs*
 mkdir -p rootimage
@@ -21,46 +24,46 @@ EOF
 
 echo "=== welcome to Embedded BOINC shell ===" >> rootimage/etc/motd
 
-for i in glibc libgcc runit curl busybox zlib openssl boinc dropbear libcgroup htop ncurses e2fsprogs prometheus-node-exporter prometheus-boinc-exporter; do
-	tar xvpf out/${i}*-bin.${ARCH}.tar.xz -C rootimage/
-	tar xvpf out/${i}*-lib.${ARCH}.tar.xz -C rootimage/
-#	tar xvpf out/${i}*-leftover.tar.xz -C rootimage/
+for i in ${BASEPKGS}; do
+	tar xvpf out/${i}*-bin.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
+	tar xvpf out/${i}*-lib.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
 done
 
-if [ x"${ADDARCH}" != "x" ]; then
-	echo "> Extra arch support: ${ADDARCH}" >> rootimage/etc/motd
+echo "> arch support: ${BASEARCH} ${EXTRAARCHS}" >> rootimage/etc/motd
+for arch in ${EXTRAARCHS}; do
 	for i in glibc libgcc; do
-		tar xvpf out/${i}*-bin.${ADDARCH}.tar.xz -C rootimage/
-		tar xvpf out/${i}*-lib.${ADDARCH}.tar.xz -C rootimage/
+		tar xvpf out/${i}*-bin.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
+		tar xvpf out/${i}*-lib.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
 	done
-fi
+done
+
 echo "> build date: $(date)" >> rootimage/etc/motd
 
 rm -rf tftproot
 mkdir -p tftproot/pxelinux.cfg/
-tar xvpf out/linux-kernel*-bin.${ARCH}.tar.xz -C tftproot "./boot/Image"
-mv tftproot/boot/Image tftproot/boot/Image-${ARCH}
-tar xvpf out/linux-kernel*-bin.${ARCH}.tar.xz -C tftproot --wildcards --no-anchored "*.dtb"
+tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/Image"
+mv tftproot/boot/Image tftproot/boot/Image-${BASEARCH}
+tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot --wildcards --no-anchored "*.dtb"
 
 # kernel needs only lib package, bin has to go into tftp root
-tar xvpf out/linux-kernel*-lib.${ARCH}.tar.xz -C rootimage/
+tar xvpf out/linux-kernel*-lib.${BASEARCH}.tar.xz -C rootimage/
 (
 	cd rootimage
-	find . | fakeroot cpio -H newc -o > ../initramfs-${ARCH}
+	find . | fakeroot cpio -H newc -o > ../initramfs-${BASEARCH}
 )
-zstd initramfs-${ARCH}
-rm initramfs-${ARCH}
+zstd initramfs-${BASEARCH}
+rm initramfs-${BASEARCH}
 
 echo "New initramfs for testing is ready!"
-ls -lh initramfs-${ARCH}.zst
+ls -lh initramfs-${BASEARCH}.zst
 
-cp initramfs-${ARCH}.zst tftproot/
+cp initramfs-${BASEARCH}.zst tftproot/
 cat <<EOF >>tftproot/pxelinux.cfg/default-arm
 timeout 50
 default d-i
         label d-i
-        linux /boot/Image-${ARCH}
-        initrd /initramfs-${ARCH}.zst
+        linux /boot/Image-${BASEARCH}
+        initrd /initramfs-${BASEARCH}.zst
 EOF
 
 (
