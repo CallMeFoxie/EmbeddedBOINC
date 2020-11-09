@@ -41,8 +41,10 @@ echo "> build date: $(date)" >> rootimage/etc/motd
 
 rm -rf tftproot
 mkdir -p tftproot/pxelinux.cfg/
-tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/Image"
-mv tftproot/boot/Image tftproot/boot/Image-${BASEARCH}
+tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/Image" || :
+mv tftproot/boot/Image tftproot/boot/Image-${BASEARCH} || :
+tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/zImage" || :
+mv tftproot/boot/zImage tftproot/boot/Image-${BASEARCH} || :
 tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot --wildcards --no-anchored "*.dtb"
 
 # kernel needs only lib package, bin has to go into tftp root

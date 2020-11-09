@@ -52,13 +52,17 @@ Target devices that are thoroughly tested and developed against:
 - Pine64+ (Allwinner A64, arm64)
 - QEMU (only for testing and development) (Generic Cortex A53 with AMBA PL011 serial driver + e1000, arm64)
 
+Tested that at least boot:
+- ASUS Tinkerboard (Rockchip RK3288, armhf)
+
 Added but not tested:
 - Tanix TX6 (Allwinner H6, arm64)
-- Orange Pi 4 (Rockchip rk3399, arm64)
+- Orange Pi 4 (Rockchip RK3399, arm64)
 
-To be added when I get a development boards:
+To be added when I get the time for it:
 - Raspberry Pi 3 (arm64)
 - Odroid C1 (armhf)
+- a RK3399-based TV box
 
 Boards I would like to support but don't and won't have:
 - Raspberry Pi 1 and 2 (armhf)

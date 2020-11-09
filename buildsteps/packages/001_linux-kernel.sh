@@ -12,10 +12,14 @@ build() {
 	done
 	cp ../../configs/kernel.${ARCH}.conf .config
 	make oldconfig
-	make -j16 Image
+	outfile="Image"
+	if [ x"${ARCH}" = "xarm" ]; then
+		outfile="zImage"
+	fi
+	make -j16 ${outfile}
 	make -j16 modules dtbs
 	make modules_install INSTALL_MOD_PATH=${DESTDIR}
 	make dtbs_install INSTALL_DTBS_PATH=${DESTDIR}/boot/dtbs/linux-${PKGVERSION}
 	mkdir -p ${DESTDIR}/boot
-	cp arch/${ARCH}/boot/Image ${DESTDIR}/boot/
+	cp arch/${ARCH}/boot/${outfile} ${DESTDIR}/boot/
 }
