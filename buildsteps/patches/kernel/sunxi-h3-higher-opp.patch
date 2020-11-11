@@ -1,0 +1,43 @@
+--- /tmp/linux-5.9.7/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts	2020-11-10 12:39:11.000000000 +0100
++++ arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts	2020-11-11 16:13:42.803662127 +0100
+@@ -193,7 +193,7 @@
+ 		 * Use 1.0V as the minimum voltage instead.
+ 		 */
+ 		regulator-min-microvolt = <1000000>;
+-		regulator-max-microvolt = <1300000>;
++		regulator-max-microvolt = <1400000>;
+ 		regulator-boot-on;
+ 		regulator-always-on;
+ 	};
+--- /tmp/linux-5.9.7/arch/arm/boot/dts/sun8i-h3.dtsi	2020-11-10 12:39:11.000000000 +0100
++++ arch/arm/boot/dts/sun8i-h3.dtsi	2020-11-11 16:13:48.903615055 +0100
+@@ -65,6 +65,29 @@
+ 			opp-microvolt = <1200000 1200000 1300000>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
++		opp-1104000000 {
++			opp-hz = /bits/ 64 <1104000000>;
++			opp-microvolt = <1320000 1320000 1320000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
++
++		opp-1200000000 {
++			opp-hz = /bits/ 64 <1200000000>;
++			opp-microvolt = <1320000 1320000 1320000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
++
++		opp-1296000000 {
++			opp-hz = /bits/ 64 <1296000000>;
++			opp-microvolt = <1340000 1340000 1340000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
++
++		opp-1368000000 {
++			opp-hz = /bits/ 64 <1368000000>;
++			opp-microvolt = <1400000 1400000 1400000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
+ 	};
+ 
+ 	cpus {

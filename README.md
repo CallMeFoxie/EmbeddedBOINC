@@ -54,6 +54,8 @@ Target devices that are thoroughly tested and developed against:
 
 Tested that at least boot:
 - ASUS Tinkerboard (Rockchip RK3288, armhf)
+- Hardkernel Odroid C1+ (Amlogic S805, armhf, no network boot)
+- Orange Pi PC (Allwinner H3, armhf)
 
 Added but not tested:
 - Tanix TX6 (Allwinner H6, arm64)
@@ -61,7 +63,6 @@ Added but not tested:
 
 To be added when I get the time for it:
 - Raspberry Pi 3 (arm64)
-- Odroid C1 (armhf)
 - a RK3399-based TV box
 
 Boards I would like to support but don't and won't have:
@@ -88,6 +89,10 @@ Projects that should work but have not been tested:
 ## 32bit userland on 64bit platform
 
 By default 64bit platforms (arm64) contain only 64bit userland (glibc, ...) but you can request adding 32bit userland (glibc and libgcc) as well by specifying `ADDARCH=arm` environment variable. This will add ~17MB memory usage though!
+
+## Performance
+
+All performance results can be found in [Benchmarks](Benchmarks.md) file. The results are added when I get a board up & running. If you want to add a board to the list, please, let me know beforehand so I can give you the same rootfs I use for testing myself!
 
 ## License
 

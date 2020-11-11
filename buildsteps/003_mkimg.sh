@@ -2,9 +2,21 @@
 
 set -eu
 
-PLATFORM=${1:-"default-arm64"}
+if [ "$#" -ne 1 ]; then
+	echo "Usage: $0 <platform>"
+	echo "  platform list:"
+	for i in $(ls platform/); do
+		i=$(echo $i | cut -d'.' -f1)
+		echo "    ${i}"
+	done
+	exit 1
+fi
+
+PLATFORM=$1
 
 source platform/${PLATFORM}.cfg
+
+kernel_version=$(tar tvpf out/linux-kernel-*-bin.${BASEARCH}.tar.xz  | grep "dtbs" | awk '{print $6}' | cut -d'/' -f4 | cut -d'-' -f2 | sort | tail -n 1)
 
 rm -rf rootimage initramfs*
 mkdir -p rootimage
@@ -41,34 +53,44 @@ echo "> build date: $(date)" >> rootimage/etc/motd
 
 rm -rf tftproot
 mkdir -p tftproot/pxelinux.cfg/
-tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/Image" || :
-mv tftproot/boot/Image tftproot/boot/Image-${BASEARCH} || :
-tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/zImage" || :
-mv tftproot/boot/zImage tftproot/boot/Image-${BASEARCH} || :
+tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/${KERNEL}"
+mv tftproot/boot/${KERNEL} tftproot/boot/${KERNEL}-${BASEARCH}-${kernel_version}
+
 tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot --wildcards --no-anchored "*.dtb"
+
 
 # kernel needs only lib package, bin has to go into tftp root
 tar xvpf out/linux-kernel*-lib.${BASEARCH}.tar.xz -C rootimage/
 (
 	cd rootimage
-	find . | fakeroot cpio -H newc -o > ../initramfs-${BASEARCH}
+	find . | fakeroot cpio -H newc -o > ../initramfs-${BASEARCH}-${kernel_version}
 )
-zstd initramfs-${BASEARCH}
-rm initramfs-${BASEARCH}
+zstd initramfs-${BASEARCH}-${kernel_version}
+rm initramfs-${BASEARCH}-${kernel_version}
 
 echo "New initramfs for testing is ready!"
-ls -lh initramfs-${BASEARCH}.zst
+ls -lh initramfs-${BASEARCH}-${kernel_version}.zst
 
-cp initramfs-${BASEARCH}.zst tftproot/
-cat <<EOF >>tftproot/pxelinux.cfg/default-arm
+if [ ! -z "${UINITRD+x}" ]; then
+	mkimage -A arm -T ramdisk -C none -n uInitrd -d initramfs-${BASEARCH}-${kernel_version}.zst tftproot/uInitramfs-${BASEARCH}-${kernel_version}
+fi
+
+mv initramfs-${BASEARCH}-${kernel_version}.zst tftproot/
+cat <<EOF >>tftproot/pxelinux.cfg/${PLATFORM}
 timeout 50
 default d-i
         label d-i
-        linux /boot/Image-${BASEARCH}
-        initrd /initramfs-${BASEARCH}.zst
+        linux /boot/${KERNEL}-${BASEARCH}-${kernel_version}
+        initrd /initramfs-${BASEARCH}-${kernel_version}.zst
+	fdt /boot/dtbs/linux-${kernel_version}/${DTB}.dtb
 EOF
 
-(
-	cd tftproot/pxelinux.cfg/
-	ln -s default-arm 01-52-54-00-12-34-56
-)
+if [ ! -z "${MACS}" ]; then
+	for i in ${MACS}; do
+		i=$(echo "01-$i" | tr '[:upper:]' '[:lower:]' | sed 's/:/-/g')
+		(
+			cd tftproot/pxelinux.cfg
+			ln -s ${PLATFORM} ${i}
+		)
+	done
+fi
