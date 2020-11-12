@@ -85,6 +85,9 @@ Projects that should work but have not been tested:
 - Yoyo@Home - should work, but I am not crunching that -- armhf only (or aarch64 with armhf glibc + libgcc)
 - Einstein@Home - should work if you enable beta/testing branch as the mainstream requires ancient libraries -- armhf only (or aarch64 with armhf glibc + libgcc)
 
+## Building and running
+
+Everything is described in [Building](Building.md) document.
 
 ## 32bit userland on 64bit platform
 
