@@ -1,4 +1,5 @@
 e1000
+clk_rk808
 dwmac-sunxi
 dwmac_sun8i
 dw_mmc
@@ -10,3 +11,13 @@ mtd_dataflash
 spi-sun6i
 spi-sun4i
 spidev
+dw_mmc_rockchip
+dw_mmc_pltfm
+phy_rockchip_typec
+phy_rockchip_pcie
+phy_rockchip_emmc
+phy_rockchip_inno_usb2
+dwmac_rk
+rtc_rk808
+sdhci_of_arasan
+ehci_platform

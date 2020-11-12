@@ -868,7 +868,7 @@ index 000000000..1e1747ceb
 +	supports-emmc;
 +	non-removable;
 +	keep-power-in-suspend;
-+	mmc-hs400-enhanced-strobe;
++	//mmc-hs400-enhanced-strobe;
 +	status = "okay";
 +};
 +
