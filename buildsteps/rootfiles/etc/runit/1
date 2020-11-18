@@ -3,12 +3,11 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 touch /etc/runit/stopit
 chmod 0 /etc/runit/stopit
+default_hostname="uebo"
+
 
 echo "UEBO: Generating ld cache"
 ldconfig
-
-echo "UEBO: Removing kernel module dir to save lots of memory"
-rm -rf /lib/modules/*
 
 echo "UEBO: Setting up all available gettys based on /proc/consoles"
 for i in $(cat /proc/consoles | cut -d" " -f1); do
@@ -16,15 +15,48 @@ for i in $(cat /proc/consoles | cut -d" " -f1); do
         cp -rp /etc/service.d/getty /etc/service/tty-${i}
 done
 
-echo "UEBO: Setting hostname"
-if [ -f /conf/hostname ]; then
-	hostname=$(cat /conf/hostname)
-	echo $hostname > /proc/sys/kernel/hostname
-	echo "127.0.0.1 $hostname localhost" > /etc/hosts
-else
-	echo "uebo" > /proc/sys/kernel/hostname
-	echo "127.0.0.1 uebo localhost" > /etc/hosts
+setupnfs=
+
+for x in $(cat /proc/cmdline); do
+	argname=$(echo $x | cut -d'=' -f1)
+	argval=$(echo $x | cut -d'=' -f2-)
+	case "${argname}" in
+		uebo.hostname)
+		default_hostname=$argval
+		;;
+		uebo.nfsdir)
+		modprobe nfs4
+		setupnfs=$argval
+		;;
+	esac
+	echo "export $(echo $argname | sed 's/\./_/g')=${argval}" >> /run/bootargs
+done
+
+if [ x"${setupnfs}" != "x" ]; then
+        echo "UEBO: Trying to mount nfs as /storage"
+        mountpoint -q /storage && umount /storage
+
+        echo "UEBO: Trying to ifup eth0"
+        ifup eth0
+        if [ $? -ne 0 ]; then
+                echo "UEBO: Failed bringing up eth0"
+        else
+		echo -n "UEBO: Trying to mount ntfs4 at /storage ..."
+                mount -t nfs4 "${setupnfs}" /storage && echo " OK"
+        fi
 fi
+
+echo "UEBO: Setting hostname"
+if [ -f /storage/hostname ]; then
+	default_hostname=$(cat /storage/hostname)
+fi
+
+echo ${default_hostname} > /proc/sys/kernel/hostname
+echo ${default_hostname} > /etc/hostname
+echo "127.0.0.1 ${default_hostname} localhost" > /etc/hosts
 
 echo "UEBO: Preparing user runtime"
 touch /var/log/lastlog
+
+echo "UEBO: Removing kernel module dir to save lots of memory"
+rm -rf /lib/modules/*

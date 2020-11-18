@@ -7,6 +7,8 @@ mount -o size=8192k -t tmpfs none /tmp
 mkdir -p /var/log
 mount -o size=32768k -t tmpfs none /var/log
 mount -t devtmpfs none /dev
+mkdir -p /storage
+chmod a+rx /storage
 
 mkdir -p /sys/fs/cgroup
 mount -t tmpfs none -o rw,nosuid,nodev,noexec,mode=755 /sys/fs/cgroup
@@ -41,15 +43,9 @@ for i in $(ls /dev/mmcblk* /dev/sd* /dev/hd*); do
 	label=$(e2label ${i} || "")
 	echo -n "${label} "
 	case x"${label}" in
-		xconf)
-			mkdir -p /conf
-			mount ${i} /conf
-			echo "-> /conf"
-			;;
-		xboinc)
-			mkdir -p /var/lib/boinc-client
-			mount ${i} /var/lib/boinc-client
-			echo "-> /var/lib/boinc-client"
+		xstorage)
+			mount ${i} /storage
+			echo "-> /storage"
 			;;
 		*)
 			echo "skipped"
@@ -57,7 +53,7 @@ for i in $(ls /dev/mmcblk* /dev/sd* /dev/hd*); do
 	esac
 done
 
-if [ -f /conf/modules ]; then
+if [ -f /storage/modules ]; then
 	echo "UEBO: Loading kernel modules stage 2"
 	for i in $(cat /conf/modules); do
         	modprobe ${i}

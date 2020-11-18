@@ -20,16 +20,24 @@ Just look into `packages/` directory. Not all are included by default though (fo
 
 ## Size
 
-The size of the whole initramfs.gz after packing is 25MB as of right now with Prometheus exporters (node & boinc) included. If you add in default debian 4.19 aarch64 modules it goes upto 77MB! You're better off baking the current 5.9 kernel with custom set of modules instead. Remember however that all modules are after loading **REMOVED** from the initramfs to save memory for BOINC! Make sure you specify all the modules you need in /etc/modules (or /conf/modules for that purpose).
+The size of the whole initramfs.zst after packing is 33MB (aarch64) or 26MB (armhf) as of right now with Prometheus exporters (node & boinc) included, alongside current 5.9 kernel modules based on the `buildsteps/configs/kernel*` configs. Remember however that all modules are after loading **REMOVED** from the initramfs to save memory! Make sure you specify all the modules you need in /etc/sysconfig/modules (or /storage/modules) for that purpose.
 
-Do note that the initramfs eats (as of this commit) roughly 45MB RAM when running. That's still pretty nice even for 512MB devices! More so considering that just Prometheus node exporter takes almost 13MB and BOINC exporter 5.2MB.
+Do note that the initramfs eats (as of this commit) roughly 85MB RAM when running, about 100MB with BOINC. That's still pretty nice even for 512MB devices! More so considering that just Prometheus node exporter takes almost 13MB and BOINC exporter 5.2MB.
 
 ## Permanent storage
 
-The boot process looks for partitions with labels. There are as of right now two of them:
+The boot process looks for partitions with labels. There is right now only one:
 
-- `conf` -- a place to store your /etc configuration, when that partition is discovered it is mounted to /conf and everything from /conf/* is symlinked to /etc/*.
-- `boinc` -- a place to store all the boinc runtime data, when that partition is discovered it is mounted to /var/lib/boinc-data. Do not that BOINC startup checks for this mountpoint so if it doesn't exist it doesn't start up as a safety measure!
+- `storage` -- a place to store your permanent everything, when that partition is discovered it is mounted to /storage, which may be referenced in any other further scripts. If this partition is not discovered, nothing is mounted there, so it may be used for `mountpoint` checks.
+
+## Features on kernel command line
+
+Right now there's several flags you can specify as kernel args that are used during the system startup:
+
+- `uebo.hostname` -- hostname to set on startup
+- `uebo.nfsdir` -- NFS4 dir that is used for /storage mount
+- `uebo.boinc.password` -- remote BOINC password
+- `uebo.boinc.remote_hosts` -- list of remote hosts allowed to connect (separated by comma)
 
 ## Init system
 
@@ -72,11 +80,13 @@ Do note that no armhf has been tested on a live device yet as I do not have any 
 
 If you want another board supported it should be pretty easy - throw required modules into configs/kernel.conf and rebuild the kernel package and test it out. The rest should be universal. Then feel free to send me a pull request with the device :).
 
+I also take donations in the form of devices, the distribution will be adjusted to the device as much as possible and then the device will take part in the compute cabinet.
+
 ## Tested BOINC projects
 
 I've been crunching several projects over the recent months and so far all of them (with a bit of tweaks) all work on Embedded BOINC distro. Namely:
-- TN-Grid -- aarch64 only
-- Rosetta@Home -- aarch64 required, but apparently requires also armhf glibc + libgcc
+- TN-Grid -- aarch64 and armhf
+- Rosetta@Home -- aarch64 required, but apparently requires also armhf glibc + libgcc?
 - World Community Grid -- armhf only (or aarch64 with armhf glibc + libgcc)
 - Universe@Home -- armhf only (or aarch64 with armhf glibc + libgcc)
 
@@ -88,10 +98,6 @@ Projects that should work but have not been tested:
 ## Building and running
 
 Everything is described in [Building](Building.md) document.
-
-## 32bit userland on 64bit platform
-
-By default 64bit platforms (arm64) contain only 64bit userland (glibc, ...) but you can request adding 32bit userland (glibc and libgcc) as well by specifying `ADDARCH=arm` environment variable. This will add ~17MB memory usage though!
 
 ## Performance
 

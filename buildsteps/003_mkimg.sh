@@ -13,6 +13,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 PLATFORM=$1
+BOINC_NFS=""
 
 source platform/${PLATFORM}.cfg
 
@@ -87,10 +88,23 @@ EOF
 
 if [ ! -z "${MACS}" ]; then
 	for i in ${MACS}; do
-		i=$(echo "01-$i" | tr '[:upper:]' '[:lower:]' | sed 's/:/-/g')
-		(
-			cd tftproot/pxelinux.cfg
-			ln -s ${PLATFORM} ${i}
-		)
+		mac=$(echo "01-$i" | cut -d';' -f1 | tr '[:upper:]' '[:lower:]' | sed 's/:/-/g')
+		uebohostname=$(echo $i | cut -d';' -f2)
+		append=""
+		if [ x"${uebohostname}" != "x" ]; then
+			append="${append} uebo.hostname=${uebohostname}"
+		fi
+		if [ ! -z "${BOINC_NFS}" ]; then
+			append="${append} uebo.nfsdir=${BOINC_NFS}/${uebohostname} uebo.boinc.password=test uebo.boinc.remote_hosts=192.168.88.226,10.0.2.1,127.0.0.1"
+		fi
+		cat <<EOF >tftproot/pxelinux.cfg/${mac}
+timeout 50
+default d-i
+	label d-i
+	linux /boot/${KERNEL}-${BASEARCH}-${kernel_version}
+	initrd /initramfs-${BASEARCH}-${kernel_version}.zst
+	fdt /boot/dtbs/linux-${kernel_version}/${DTB}.dtb
+	append ${append}
+EOF
 	done
 fi

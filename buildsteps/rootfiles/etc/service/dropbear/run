@@ -1,10 +1,15 @@
 #!/bin/sh
 exec 2>&1
 
-if [ ! -f /conf/dropbear/ed25519_hostkey ]; then
-	mkdir -p /conf/dropbear
-	dropbearkey -t ed25519 -f /conf/dropbear/ed25519_hostkey
+umount /etc/dropbear 2>/dev/null || :
+
+mkdir -p /etc/dropbear /storage/dropbear
+mountpoint -q /storage && mount --bind /storage/dropbear /etc/dropbear
+# still start up ssh but don't save keys if no storage is mounted
+
+if [ ! -f /etc/dropbear/ed25519_hostkey ]; then
+	dropbearkey -t ed25519 -f /etc/dropbear/ed25519_hostkey
 fi
 
 
-exec /usr/sbin/dropbear -F -r /conf/dropbear/ed25519_hostkey
+exec /usr/sbin/dropbear -F -r /etc/dropbear/ed25519_hostkey

@@ -1,7 +1,16 @@
 #!/bin/sh
 
+umount /var/lib/boinc-client 2>/dev/null || :
+
+mkdir -p /var/lib/boinc-client
+mountpoint -q /storage && mkdir -p /storage/boinc && mount --bind /storage/boinc /var/lib/boinc-client
+
 # check that boinc-client is actually mounted from a permanent storage
 mountpoint /var/lib/boinc-client -q || exit 1
+
+uebo_boinc_password=""
+uebo_boin_remote_hosts=""
+source /run/bootargs
 
 if ! getent group boinc; then
 	addgroup -S boinc
@@ -11,11 +20,23 @@ if ! getent passwd boinc; then
 	 adduser -h /var/lib/boinc-client -s /usr/sbin/nologin -G boinc -S -D -H boinc
 fi
 
-mkdir -p /var/lib/boinc-client /etc/boinc-client
-chown -R boinc:boinc /var/lib/boinc-client
+mkdir -p /etc/boinc-client
 
 echo "data_dir=/var/lib/boinc-client" > /etc/boinc-client/config.properties
 cp /etc/boinc-client/all_projects_list.xml /var/lib/boinc-client/all_projects_list.xml
+if [ ! -z "${uebo_boinc_password}" ]; then
+	echo "${uebo_boinc_password}" > /var/lib/boinc-client/gui_rpc_auth.cfg
+	chmod 0600 /var/lib/boinc-client/gui_rpc_auth.cfg
+fi
+
+if [ ! -z "${uebo_boinc_remote_hosts}" ]; then
+	rm /var/lib/boinc-client/remote_hosts.cfg
+	for i in $(echo ${uebo_boinc_remote_hosts} | sed 's/,/ /g'); do
+		echo ${i} >> /var/lib/boinc-client/remote_hosts.cfg
+	done
+	chmod 0600 /var/lib/boinc-client/remote_hosts.cfg
+fi
+chown -R boinc:boinc /var/lib/boinc-client
 
 if [ ! -d /sys/fs/cgroup/memory/boinc ]; then
 	mkdir /sys/fs/cgroup/memory/boinc

@@ -21,3 +21,4 @@ dwmac_rk
 rtc_rk808
 sdhci_of_arasan
 ehci_platform
+nfsv4
