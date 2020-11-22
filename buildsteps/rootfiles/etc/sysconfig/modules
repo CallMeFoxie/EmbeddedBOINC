@@ -20,5 +20,11 @@ phy_rockchip_inno_usb2
 dwmac_rk
 rtc_rk808
 sdhci_of_arasan
-ehci_platform
+ehci-platform
 nfsv4
+dwc2
+dwc2_platform
+usb-common
+ehci-hcd
+smsc95xx
+usbnet

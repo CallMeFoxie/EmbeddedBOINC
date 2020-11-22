@@ -14,6 +14,8 @@ fi
 
 PLATFORM=$1
 BOINC_NFS=""
+BOINC_PASSWORD=${BOINC_PASSWORD:-"somepassword"}
+BOINC_REMOTE_HOSTS=${BOINC_ALLOW_IPS:-"192.168.88.221,192.168.88.226,192.168.88.229"}
 
 source platform/${PLATFORM}.cfg
 
@@ -95,8 +97,10 @@ if [ ! -z "${MACS}" ]; then
 			append="${append} uebo.hostname=${uebohostname}"
 		fi
 		if [ ! -z "${BOINC_NFS}" ]; then
-			append="${append} uebo.nfsdir=${BOINC_NFS}/${uebohostname} uebo.boinc.password=test uebo.boinc.remote_hosts=192.168.88.226,10.0.2.1,127.0.0.1"
+			append="${append} uebo.nfsdir=${BOINC_NFS}/${uebohostname}"
 		fi
+		append="${append} uebo.boinc.password=${BOINC_PASSWORD} uebo.boinc.remote_hosts=${BOINC_REMOTE_HOSTS}"
+
 		cat <<EOF >tftproot/pxelinux.cfg/${mac}
 timeout 50
 default d-i
