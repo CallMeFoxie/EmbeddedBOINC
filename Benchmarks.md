@@ -9,6 +9,7 @@ All devices are tested on identical builds (except arm64 vs armhf when applicabl
 | device           | clock        | SoC             | cores        | arch  | Whetstone (float) | Dhrystone (int) |
 |------------------|--------------|-----------------|--------------|-------|-------------------|-----------------|
 | Pine64+          | 1.152GHz     | Allwinner A64   | 4xA53        | arm64 | 1227              | 3421            |
+| SOPine64         | 1.152GHz     | Allwinner A64   | 4xA53        | arm64 | 1244              | 3422            |
 | Orange Pi PC     | 1.368GHz     | Allwinner H3    | 4xA7         | armhf | 1028              | 3305            |
 | Odroid C1+       | 1.5GHz       | Amlogic S805    | 4xA5         | armhf | 1070              | 2956            |
 | ASUS Tinkerboard | 1.8GHz       | Rockchip RK3288 | 4xA17        | armhf | 1626              | 6203            |
