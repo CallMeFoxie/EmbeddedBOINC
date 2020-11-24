@@ -38,6 +38,7 @@ Right now there's several flags you can specify as kernel args that are used dur
 - `uebo.nfsdir` -- NFS4 dir that is used for /storage mount
 - `uebo.boinc.password` -- remote BOINC password
 - `uebo.boinc.remote_hosts` -- list of remote hosts allowed to connect (separated by comma)
+- `uebo.consul` -- IP/hostname (with port) that consul listens on that will be used for auto discovery for prometheus exporters (de)registering
 
 ## Init system
 

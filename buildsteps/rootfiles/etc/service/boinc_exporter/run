@@ -6,6 +6,9 @@ if [ ! -e /var/lib/boinc-client/gui_rpc_auth.cfg ]; then
 	exit 1
 fi
 
+source /usr/share/uebo_shell_stuff
+register_prometheus_service boinc_exporter 9109
+
 if [ ! -d /sys/fs/cgroup/memory/prometheus ]; then
 	mkdir /sys/fs/cgroup/memory/prometheus
 fi

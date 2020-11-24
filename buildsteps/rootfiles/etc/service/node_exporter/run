@@ -2,6 +2,9 @@
 
 exec 2>&1
 
+source /usr/share/uebo_shell_stuff
+register_prometheus_service node_exporter 9100
+
 if [ ! -d /sys/fs/cgroup/memory/prometheus ]; then
 	mkdir /sys/fs/cgroup/memory/prometheus
 fi

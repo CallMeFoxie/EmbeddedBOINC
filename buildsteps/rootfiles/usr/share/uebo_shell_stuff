@@ -1,0 +1,73 @@
+register_prometheus_service() {
+	service=$1
+	port=$2
+
+	if [ ! -f /run/bootargs ]; then
+		exit
+	fi
+	source /run/bootargs
+	if [ x"${uebo_consul}" = "x" ]; then
+		exit
+	fi
+
+	IP=$(ip a | grep "scope global" | awk '{print $2}' | cut -d'/' -f1)
+	cat <<EOF >/tmp/exporter.$$.json
+{
+  "Node": "$(hostname)",
+  "Address": "${IP}",
+  "NodeMeta": {
+    "external-node": "true",
+    "external-probe": "true"
+  },
+  "Service": {
+    "ID": "${service}",
+    "Service": "${service}",
+    "Tags": ["${service}", "prometheus"],
+    "Port": ${port}
+  }
+}
+EOF
+	curl -X PUT -d @/tmp/exporter.$$.json http://${uebo_consul}/v1/catalog/register
+	rm /tmp/exporter.$$.json
+}
+
+deregister_prometheus_service() {
+	service=$1
+
+        if [ ! -f /run/bootargs ]; then
+                exit
+        fi
+        source /run/bootargs
+        if [ x"${uebo_consul}" = "x" ]; then
+                exit
+        fi
+
+	cat <<EOF >/tmp/de_exporter.$$.json
+{
+  "Node": "$(hostname)",
+  "ServiceID": "${service}"
+}
+EOF
+	curl -X PUT -d @/tmp/de_exporter.$$.json http://${uebo_consul}/v1/catalog/deregister
+	rm /tmp/de_exporter.$$.json
+
+}
+
+deregister_prometheus_node() {
+        if [ ! -f /run/bootargs ]; then
+                exit
+        fi
+        source /run/bootargs
+        if [ x"${uebo_consul}" = "x" ]; then
+                exit
+        fi
+
+        cat <<EOF >/tmp/de_exporter.$$.json
+{
+  "Node": "$(hostname)",
+}
+EOF
+        curl -X PUT -d @/tmp/de_exporter.$$.json http://${uebo_consul}/v1/catalog/deregister
+        rm /tmp/de_exporter.$$.json
+
+}

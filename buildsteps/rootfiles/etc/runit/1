@@ -16,34 +16,46 @@ for i in $(cat /proc/consoles | cut -d" " -f1); do
 done
 
 setupnfs=
+waitfornet="no"
 
 for x in $(cat /proc/cmdline); do
 	argname=$(echo $x | cut -d'=' -f1)
 	argval=$(echo $x | cut -d'=' -f2-)
 	case "${argname}" in
 		uebo.hostname)
-		default_hostname=$argval
-		;;
+			default_hostname=$argval
+			;;
 		uebo.nfsdir)
-		modprobe nfs4
-		setupnfs=$argval
-		;;
+			waitfornet="yes"
+			;;
+		uebo.consul)
+			waitfornet="yes"
+			;;
+		
 	esac
 	echo "export $(echo $argname | sed 's/\./_/g')=${argval}" >> /run/bootargs
 done
 
-if [ x"${setupnfs}" != "x" ]; then
-        echo "UEBO: Trying to mount nfs as /storage"
+if [ x"${waitfornet}" = "xyes" ]; then
+	echo -n "UEBO: Trying to ifup eth0 ... "
+	ifup eth0
+	if [ $? -ne 0 ]; then
+		echo "fail"
+	else
+		echo "ok"
+	fi
+fi
+
+source /run/bootargs
+
+# can we fetch some configuration from consul?
+
+if [ x"${uebo_nfsdir}" != "x" ]; then
+	modprobe nfs4
         mountpoint -q /storage && umount /storage
 
-        echo "UEBO: Trying to ifup eth0"
-        ifup eth0
-        if [ $? -ne 0 ]; then
-                echo "UEBO: Failed bringing up eth0"
-        else
-		echo -n "UEBO: Trying to mount ntfs4 at /storage ..."
-                mount -t nfs4 "${setupnfs}" /storage && echo " OK"
-        fi
+	echo -n "UEBO: Trying to mount nfs4 at /storage ..."
+	mount -t nfs4 "${setupnfs}" /storage && echo " ok" || echo " fail"
 fi
 
 echo "UEBO: Setting hostname"

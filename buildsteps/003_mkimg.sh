@@ -16,6 +16,7 @@ PLATFORM=$1
 BOINC_NFS=""
 BOINC_PASSWORD=${BOINC_PASSWORD:-"somepassword"}
 BOINC_REMOTE_HOSTS=${BOINC_ALLOW_IPS:-"192.168.88.221,192.168.88.226,192.168.88.229"}
+UEBO_CONSUL=${UEBO_CONSUL:-"192.168.88.99:8500"}
 
 source platform/${PLATFORM}.cfg
 
@@ -98,6 +99,9 @@ if [ ! -z "${MACS}" ]; then
 		fi
 		if [ ! -z "${BOINC_NFS}" ]; then
 			append="${append} uebo.nfsdir=${BOINC_NFS}/${uebohostname}"
+		fi
+		if [ ! -z "${UEBO_CONSUL}" ]; then
+			append="${append} uebo.consul=${UEBO_CONSUL}"
 		fi
 		append="${append} uebo.boinc.password=${BOINC_PASSWORD} uebo.boinc.remote_hosts=${BOINC_REMOTE_HOSTS}"
 

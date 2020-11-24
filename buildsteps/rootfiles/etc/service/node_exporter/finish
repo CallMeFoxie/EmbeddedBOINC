@@ -1,0 +1,5 @@
+#!/bin/sh
+
+source /usr/share/uebo_shell_stuff
+
+deregister_prometheus_service node_exporter

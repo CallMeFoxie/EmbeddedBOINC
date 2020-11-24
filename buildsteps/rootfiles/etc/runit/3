@@ -6,6 +6,10 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 LAST=0
 test -x /etc/runit/reboot && LAST=6
 
+echo 'Deregistering node from prometheus'
+source /usr/share/uebo_shell_stuff
+deregister_prometheus_node
+
 echo 'Waiting for services to stop...'
 sv -w196 force-stop /etc/service/*
 sv exit /etc/service/*

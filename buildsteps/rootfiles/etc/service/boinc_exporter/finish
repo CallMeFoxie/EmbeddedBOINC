@@ -1,0 +1,4 @@
+#!/bin/sh
+
+source /usr/share/uebo_shell_stuff
+deregister_prometheus_service boinc_exporter
