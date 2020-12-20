@@ -1,6 +1,6 @@
 # Embedded BOINC
 
-is a small one-purpose linux "distribution" built just for running BOINC on a PXE booted (or in theory SPI flash) node. It runs purely from initramfs, so there's no need for installing anything.
+is a small one-purpose linux "distribution" built just for running BOINC on a PXE booted (or in theory SPI flash) node. It runs purely from initramfs, so there's no need for installing anything. Current target are small Single Board Computers like Raspberry Pi, Pine64, Orange Pi boards etc. i386/amd64 platforms are not built against right now.
 
 ## Why
 
@@ -90,11 +90,15 @@ I've been crunching several projects over the recent months and so far all of th
 - Rosetta@Home -- aarch64 required, but apparently requires also armhf glibc + libgcc?
 - World Community Grid -- armhf only (or aarch64 with armhf glibc + libgcc)
 - Universe@Home -- armhf only (or aarch64 with armhf glibc + libgcc)
+- LHC@Home -- aarch64 only
 
 Projects that should work but have not been tested:
-- LHC@Home - should work, waiting for some SixTrack jobs to appear -- aarch64 only
 - Yoyo@Home - should work, but I am not crunching that -- armhf only (or aarch64 with armhf glibc + libgcc)
 - Einstein@Home - should work if you enable beta/testing branch as the mainstream requires ancient libraries -- armhf only (or aarch64 with armhf glibc + libgcc)
+
+Projects that won't work:
+- MLC@Home - requires libfuse and possibly other libraries
+- anything that is not available for armhf/aarch64 platforms
 
 ## Building and running
 
