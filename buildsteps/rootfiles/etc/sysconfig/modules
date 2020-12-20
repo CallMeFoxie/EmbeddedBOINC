@@ -7,7 +7,6 @@ sdhci
 spi-nor
 mtd
 sst25l
-mtd_dataflash
 spi-sun6i
 spi-sun4i
 spidev
@@ -28,3 +27,5 @@ usb-common
 ehci-hcd
 smsc95xx
 usbnet
+lima
+panfrost

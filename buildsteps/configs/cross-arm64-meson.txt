@@ -1,0 +1,23 @@
+[binaries]
+c = '/clfs/cross-tools/bin/aarch64-linux-gnu-gcc'
+cpp = '/clfs/cross-tools/bin/aarch64-linux-gnu-g++'
+ar = '/clfs/cross-tools/bin/aarch64-linux-gnu-ar'
+strip = '/clfs/cross-tools/bin/aarch64-linux-gnu-strip'
+objcopy = '/clfs/cross-tools/bin/aarch64-linux-gnu-objcopy'
+ld= '/clfs/cross-tools/bin/aarch64-linux-gnu-ld' 
+pkg-config = '/bin/pkg-config'
+
+[properties]
+pkg_config_libdir = '/clfs/targetfs/usr/lib/pkgconfig/:/clfs/targetfs/usr/lib64/pkgconfig/'
+
+[host_machine]
+system = 'linux'
+cpu_family = 'aarch64'
+cpu = 'arm64'
+endian = 'little'
+
+[build_machine]
+system = 'linux'
+cpu_family = 'amd64'
+cpu = 'amd64'
+endian = 'little'
