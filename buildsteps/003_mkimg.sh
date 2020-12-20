@@ -20,7 +20,7 @@ UEBO_CONSUL=${UEBO_CONSUL:-"192.168.88.99:8500"}
 
 source platform/${PLATFORM}.cfg
 
-kernel_version=$(tar tvpf out/linux-kernel-*-bin.${BASEARCH}.tar.xz  | grep "dtbs" | awk '{print $6}' | cut -d'/' -f4 | cut -d'-' -f2 | sort | tail -n 1)
+kernel_version=$(tar tvpf out/linux-kernel-*-bin_*.${BASEARCH}.tar.xz  | grep "dtbs" | awk '{print $6}' | cut -d'/' -f4 | cut -d'-' -f2 | sort | tail -n 1)
 
 rm -rf rootimage initramfs*
 mkdir -p rootimage
@@ -41,15 +41,15 @@ EOF
 echo "=== welcome to Embedded BOINC shell ===" >> rootimage/etc/motd
 
 for i in ${BASEPKGS}; do
-	tar xvpf out/${i}*-bin.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
-	tar xvpf out/${i}*-lib.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
+	tar xvpf out/${i}*-bin_*.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
+	tar xvpf out/${i}*-lib_*.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
 done
 
 echo "> arch support: ${BASEARCH} ${EXTRAARCHS}" >> rootimage/etc/motd
 for arch in ${EXTRAARCHS}; do
 	for i in glibc libgcc; do
-		tar xvpf out/${i}*-bin.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
-		tar xvpf out/${i}*-lib.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
+		tar xvpf out/${i}*-bin_*.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
+		tar xvpf out/${i}*-lib_*.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
 	done
 done
 
@@ -57,17 +57,17 @@ echo "> build date: $(date)" >> rootimage/etc/motd
 
 rm -rf tftproot
 mkdir -p tftproot/pxelinux.cfg/
-tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot "./boot/${KERNEL}"
+tar xvpf out/linux-kernel*-bin_*.${BASEARCH}.tar.xz -C tftproot "./boot/${KERNEL}"
 mv tftproot/boot/${KERNEL} tftproot/boot/${KERNEL}-${BASEARCH}-${kernel_version}
 
-tar xvpf out/linux-kernel*-bin.${BASEARCH}.tar.xz -C tftproot --wildcards --no-anchored "*.dtb"
+tar xvpf out/linux-kernel*-bin_*.${BASEARCH}.tar.xz -C tftproot --wildcards --no-anchored "*.dtb"
 
 
 # kernel needs only lib package, bin has to go into tftp root
-tar xvpf out/linux-kernel*-lib.${BASEARCH}.tar.xz -C rootimage/
+tar xvpf out/linux-kernel*-lib_*.${BASEARCH}.tar.xz -C rootimage/
 (
 	cd rootimage
-	find . | fakeroot cpio -H newc -o > ../initramfs-${BASEARCH}-${kernel_version}
+	find . | sort | uniq | fakeroot cpio -H newc -o > ../initramfs-${BASEARCH}-${kernel_version}
 )
 zstd initramfs-${BASEARCH}-${kernel_version}
 rm initramfs-${BASEARCH}-${kernel_version}

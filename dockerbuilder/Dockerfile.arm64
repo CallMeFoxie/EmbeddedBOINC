@@ -3,16 +3,16 @@ FROM ubuntu:focal
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.9.3
+ENV kernel_version=5.10.1
 ENV binutils_version=2.35.1
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.0
 ENV gmp_version=6.2.0
 ENV gcc_version=10.2.0
 ENV glibc_version=2.32
-ENV golang_version=1.14.10
+ENV golang_version=1.15.6
 
-ENV MINIMUM_KERNEL=5.9.0
+ENV MINIMUM_KERNEL=5.10.0
 
 ENV CLFS=/clfs
 WORKDIR /sources

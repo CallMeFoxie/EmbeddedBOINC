@@ -3,16 +3,16 @@ FROM ubuntu:focal
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.9.3
+ENV kernel_version=5.10.1
 ENV binutils_version=2.35.1
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.0
 ENV gmp_version=6.2.0
 ENV gcc_version=10.2.0
 ENV glibc_version=2.32
-ENV golang_version=1.14.10
+ENV golang_version=1.15.6
 
-ENV MINIMUM_KERNEL=5.9.0
+ENV MINIMUM_KERNEL=5.10.0
 
 ENV CLFS=/clfs
 WORKDIR /sources
@@ -38,8 +38,6 @@ ENV CLFS_FLOAT=hard
 ENV ARCH=${CLFS_ARCH}
 ENV CLFS_ARM_ARCH=armv7-a
 RUN mkdir -p $CLFS/cross-tools/${CLFS_TARGET} && ln -sfv ${CLFS}/cross-tools/ ${CLFS}/cross-tools/${CLFS_TARGET}/usr
-
-ENV GOROOT=/sources/go/
 
 # 1. build kernel headers0
 RUN tar xvpf linux-${kernel_version}.tar.xz
@@ -151,6 +149,7 @@ RUN apt install vim pkg-config libtool patch bc device-tree-compiler -y && apt a
 WORKDIR /sources
 RUN tar xvpf go${golang_version}.linux-amd64.tar.gz
 ENV PATH=/sources/go/bin:$PATH
+ENV GOROOT=/sources/go/
 
 ENV CC="${CLFS_TARGET}-gcc --sysroot=${CLFS}/targetfs"
 ENV CXX="${CLFS_TARGET}-g++ --sysroot=${CLFS}/targetfs"

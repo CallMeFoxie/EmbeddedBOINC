@@ -21,6 +21,7 @@ rm -rf ${TARGETFS}/* ${TARGETDEV}/* build/*
 package_default() {
 	rm -rf ../tmp
 	mkdir -p ../tmp
+	hash=$2
 	# help files
 	find . \
 		-path "./usr/share/man/*" -o \
@@ -76,24 +77,25 @@ package_default() {
 	fi
 	echo ".. packing"
 	for i in help dev lib bin; do
-		[ "$(cat ../tmp/${i}files.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}.${ARCH}.tar.xz"
+		[ "$(cat ../tmp/${i}files.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/${i}files.txt | xz > "${1}-${i}_${hash}.${ARCH}.tar.xz"
 		cat ../tmp/${i}files.txt | xargs rm || :
 	done
 	find . -type d -empty -delete
 
 	echo ".. getting leftovers"
 	find . -type f | sort | uniq > ../tmp/leftovers.txt
-	[ "$(cat ../tmp/leftovers.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/leftovers.txt | xz > "${1}-leftover.${ARCH}.tar.xz" || :
+	[ "$(cat ../tmp/leftovers.txt | wc -l)" -ne 0 ] && tar cvT ../tmp/leftovers.txt | xz > "${1}-leftover_${hash}.${ARCH}.tar.xz" || :
 	echo ".. DONE"
 }
 
 for pkgfile in $(ls packages | sort -n); do
 	source ./packages/${pkgfile}
+	hash=$(sha256sum ./packages/${pkgfile} | cut -d" " -f1)
 	#rm -rf tmp/
 	echo "==== Working with ${PKGNAME} @ ${PKGVERSION} ===="
 	BUILD=1
 
-	if [ -f "out/${PKGNAME}-${PKGVERSION}-bin.${ARCH}.tar.xz" -o -f "out/${PKGNAME}-${PKGVERSION}-lib.${ARCH}.tar.xz" ]; then
+	if [ -f "out/${PKGNAME}-${PKGVERSION}-bin_${hash}.${ARCH}.tar.xz" -o -f "out/${PKGNAME}-${PKGVERSION}-lib_${hash}.${ARCH}.tar.xz" ]; then
 		BUILD=0
 	fi
 
@@ -108,7 +110,7 @@ for pkgfile in $(ls packages | sort -n); do
 
 
 		PKGPATH=${PKGPATH:-$(echo ${SOURCEFILE} | sed 's/\.tar.*//')}
-		rm -rf build/${PKGPATH} destdir || :
+		rm -rf build/${PKGPATH} destdir out/${PKGNAME}-*.${ARCH}.tar.xz|| :
 		mkdir -p destdir build
 
 		if [ -f "sources/${SOURCEFILE}" ]; then
@@ -130,12 +132,12 @@ for pkgfile in $(ls packages | sort -n); do
 		if [ -n "$haspackaging" ]; then
 			(
 				cd destdir
-				package "../out/${PKGNAME}-${PKGVERSION}"
+				package "../out/${PKGNAME}-${PKGVERSION}" $hash
 			)
 		else
 			(
 				cd destdir
-				package_default "../out/${PKGNAME}-${PKGVERSION}"
+				package_default "../out/${PKGNAME}-${PKGVERSION}" $hash
 			)
 		fi
 	fi
@@ -143,7 +145,7 @@ for pkgfile in $(ls packages | sort -n); do
 	unset -f package
 	unset PKGPATH haspackaging hasunpack SOURCEFILE URL DONTSTRIP
 
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib.${ARCH}.tar.xz" -C ${TARGETFS} || :
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev.${ARCH}.tar.xz" -C ${TARGETFS} || :
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-bin.${ARCH}.tar.xz" -C ${TARGETFS} || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-bin_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} || :
 done
