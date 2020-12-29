@@ -9,4 +9,5 @@ build() {
 	cp -dvp /clfs/cross-tools/${CLFS_TARGET}/lib${IS64}/libstdc++.so.6 ${DESTDIR}/lib${IS64}
 	cp -dvp /clfs/cross-tools/${CLFS_TARGET}/lib${IS64}/libstdc++.so.6.0.28 ${DESTDIR}/lib${IS64}
 	cp -dvp /clfs/cross-tools/${CLFS_TARGET}/lib${IS64}/libstdc++.so ${DESTDIR}/lib${IS64}
+	cp -dvp /clfs/cross-tools/${CLFS_TARGET}/lib${IS64}/libgomp.so* ${DESTDIR}/lib${IS64}
 }
