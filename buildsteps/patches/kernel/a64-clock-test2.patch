@@ -1,0 +1,12 @@
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 07d1811..6a53926 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -30,6 +30,7 @@ config ARM64
+ 	select GENERIC_ALLOCATOR
+ 	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
++	select CLOCKSOURCE_VALIDATE_LAST_CYCLE
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_EARLY_IOREMAP
+ 	select GENERIC_IDLE_POLL_SETUP
