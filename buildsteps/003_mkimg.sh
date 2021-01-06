@@ -38,6 +38,14 @@ cat <<EOF >> rootimage/etc/motd
                                                                                       
 EOF
 
+cat <<EOF >> rootimage/etc/os-release
+NAME=EmbeddedBOINC
+PRETTY_NAME=EmbeddedBOINC
+VERSION=$(git describe || echo "master")
+ID=uebo
+VARIANT=${BASEARCH}+${EXTRAARCHS}
+EOF
+
 echo "=== welcome to Embedded BOINC shell ===" >> rootimage/etc/motd
 
 for i in ${BASEPKGS}; do

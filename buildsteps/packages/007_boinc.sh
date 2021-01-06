@@ -9,6 +9,7 @@ build() {
 	patch -p1 < ../../patches/boinc/fix-hardfp-arm2.patch
 	patch -p1 < ../../patches/boinc/arm64-arm-alt-platform.patch
 	patch -p1 < ../../patches/boinc/sched-plus-aclh.patch
+	patch -p1 < ../../patches/boinc/libc-version.patch
 	./_autosetup
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-server --disable-fcgi --disable-manager
 	make -j16
