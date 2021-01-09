@@ -14,7 +14,7 @@ All devices are tested on identical builds (except arm64 vs armhf when applicabl
 | Odroid C1+       | 1.5GHz       | Amlogic S805    | 4xA5         | armhf | 1070              | 2956            |
 | ASUS Tinkerboard | 1.8GHz       | Rockchip RK3288 | 4xA17        | armhf | 1626              | 6203            |
 | Orange Pi 4      | 2GHz, 1.5GHz | Rockchip RK3399 | 2xA72, 4xA53 | arm64 | 2793, 1630        | 10661, 4486     |
-| H96 Max TV box   |              | Rockchip RK3399 | 2xA72, 4xA53 | arm64 |                   |                 |
+| H96 Max TV box   | 2GHz, 1.5GHz | Rockchip RK3399 | 2xA72, 4xA53 | arm64 | 2786, 1629        | 11537, 4484     |
 | Tanix TX6        | 1.8GHz       | Allwinner H6    | 4xA53        | arm64 |                   |                 |
 | Orange Pi Zero   | 1.1GHz       | Allwinner H2    | 4xA7         | armhf |                   |                 |
 | Raspberry Pi 3B  | 1.2GHz       | Broadcom 2837   | 4xA53        | arm64 | 715               | 1804            |
