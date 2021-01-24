@@ -2,8 +2,8 @@
 
 set -eu
 
-if [ "$#" -ne 1 ]; then
-	echo "Usage: $0 <platform>"
+if [ "$#" -le 1 ]; then
+	echo "Usage: $0 <platform> [<config file>]"
 	echo "  platform list:"
 	for i in $(ls platform/); do
 		i=$(echo $i | cut -d'.' -f1)
@@ -13,19 +13,21 @@ if [ "$#" -ne 1 ]; then
 fi
 
 PLATFORM=$1
+CONFIG=${2:-".config"}
 
-if [ ! -f ".config" ]; then
+if [ ! -f "${CONFIG}" ]; then
 	echo "Missing build config! You can check example in sample.config. Copy it to .config and do your edits!"
 	exit 1
 fi
 
 source platform/${PLATFORM}.cfg
-source .config
+source "${CONFIG}"
 
 BOINC_NFS=${BOINC_NFS:-""}
 [ -z "${BOINC_PASSWORD}" ] && echo "Missing BOINC_PASSWORD!" && exit 1
 [ -z "${BOINC_REMOTE_HOSTS}" ] && echo "Missing BOINC_REMOTE_HOSTS!" && exit 1
 UEBO_CONSUL=${UEBO_CONSUL:-""}
+SSHKEY=${SSHKEY:-""}
 
 kernel_version=$(tar tvpf out/linux-kernel-*-bin_*.${BASEARCH}.tar.xz  | grep "dtbs" | awk '{print $6}' | cut -d'/' -f4 | cut -d'-' -f2 | sort | tail -n 1)
 
