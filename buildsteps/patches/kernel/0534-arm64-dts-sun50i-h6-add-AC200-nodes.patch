@@ -26,6 +26,8 @@
 +				reg = <0x2c 0x2>;
 +			};
  		};
+
+ 		watchdog: watchdog@30090a0 {
 @@ -399,6 +424,16 @@
  				function = "uart1";
  			};

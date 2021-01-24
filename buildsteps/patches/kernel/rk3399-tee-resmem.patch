@@ -1,0 +1,20 @@
+--- linux-5.10.5-old/arch/arm64/boot/dts/rockchip/rk3399.dtsi	2021-01-06 14:56:56.000000000 +0100
++++ linux-5.10.5/arch/arm64/boot/dts/rockchip/rk3399.dtsi	2021-01-21 13:30:46.485857079 +0100
+@@ -39,6 +39,17 @@
+ 		serial4 = &uart4;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		tee@0x8400000 {
++			reg = <0x0 0x8400000 0x0 0x2400000>;
++			no-map;
++		};
++	};
++
+ 	cpus {
+ 		#address-cells = <2>;
+ 		#size-cells = <0>;

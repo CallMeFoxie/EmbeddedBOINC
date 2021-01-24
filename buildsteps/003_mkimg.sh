@@ -13,12 +13,19 @@ if [ "$#" -ne 1 ]; then
 fi
 
 PLATFORM=$1
-BOINC_NFS=""
-BOINC_PASSWORD=${BOINC_PASSWORD:-"somepassword"}
-BOINC_REMOTE_HOSTS=${BOINC_ALLOW_IPS:-"192.168.88.221,192.168.88.226,192.168.88.229"}
-UEBO_CONSUL=${UEBO_CONSUL:-"192.168.88.99:8500"}
+
+if [ ! -f ".config" ]; then
+	echo "Missing build config! You can check example in sample.config. Copy it to .config and do your edits!"
+	exit 1
+fi
 
 source platform/${PLATFORM}.cfg
+source .config
+
+BOINC_NFS=${BOINC_NFS:-""}
+[ -z "${BOINC_PASSWORD}" ] && echo "Missing BOINC_PASSWORD!" && exit 1
+[ -z "${BOINC_REMOTE_HOSTS}" ] && echo "Missing BOINC_REMOTE_HOSTS!" && exit 1
+UEBO_CONSUL=${UEBO_CONSUL:-""}
 
 kernel_version=$(tar tvpf out/linux-kernel-*-bin_*.${BASEARCH}.tar.xz  | grep "dtbs" | awk '{print $6}' | cut -d'/' -f4 | cut -d'-' -f2 | sort | tail -n 1)
 
@@ -62,6 +69,14 @@ for arch in ${EXTRAARCHS}; do
 done
 
 echo "> build date: $(date)" >> rootimage/etc/motd
+
+PASSWORD=$(echo -n $PASSWORD | mkpasswd -m sha-512 -s)
+
+echo "Adding user ${USERNAME}"
+echo "${USERNAME}:x:0:0:${USERNAME},,,:/root:/bin/sh" >> rootimage/etc/passwd
+echo "${USERNAME}:${PASSWORD}:18288:0:99999:7:::" >> rootimage/etc/shadow
+
+[ ! -z "${SSHKEY}" ] && echo "Adding SSH key from ${SSHKEY}" && cp "${SSHKEY}" rootimage/root/.ssh/authorized_keys
 
 rm -rf tftproot
 mkdir -p tftproot/pxelinux.cfg/
