@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=2.32
+PKGVERSION=2.33
 PKGNAME="glibc"
 SOURCEFILE="glibc-${PKGVERSION}.tar.xz"
 URL="https://ftp.gnu.org/gnu/glibc/"

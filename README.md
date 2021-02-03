@@ -108,6 +108,23 @@ Everything is described in [Building](Building.md) document.
 
 All performance results can be found in [Benchmarks](Benchmarks.md) file. The results are added when I get a board up & running. If you want to add a board to the list, please, let me know beforehand so I can give you the same rootfs I use for testing myself!
 
+## Monitoring
+
+Since this distro has built-in Prometheus Node Exporter and BOINC Exporter in default profiles and support for registering into Consul autodiscovery, you can add the discovery into Prometheus scraper very easily:
+
+```
+  - job_name: node_exporter
+    scrape_interval: 15s
+    honor_labels: true
+    consul_sd_configs:
+      - server: localhost:8500
+        services: 
+        - node_exporter
+        - boinc_exporter
+```
+
+to scrape all nodes & boinc exporters. That's it.
+
 ## License
 
 Probably MIT or whatever you want to do with it. There's no secrets, nothing special, just a bunch of shell scripts.

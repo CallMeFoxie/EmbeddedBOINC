@@ -4,6 +4,8 @@
 
 All devices are tested on identical builds (except arm64 vs armhf when applicable) of glibc 2.32, linux kernel 5.9.x branch (makes no measurable difference so far) and BOINC. Everything (if possible) is compiled with -O2 flags. All devices are booted via network or locally into initramfs -ran system.
 
+**NOTE**: In the process of switching to glibc 2.33 and linux kernel 5.10.x branches the results may vary a bit, upto 10% from current benchmarks.
+
 ## Results 
 
 | device           | clock        | SoC             | cores        | arch  | Whetstone (float) | Dhrystone (int) |

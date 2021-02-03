@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION="5.10.10"
+PKGVERSION="5.10.12"
 PKGNAME="linux-kernel"
 SOURCEFILE="linux-${PKGVERSION}.tar.xz"
 URL="https://cdn.kernel.org/pub/linux/kernel/v5.x"

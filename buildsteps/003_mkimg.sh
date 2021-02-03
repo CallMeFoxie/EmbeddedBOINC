@@ -2,7 +2,7 @@
 
 set -eu
 
-if [ "$#" -le 1 ]; then
+if [ "$#" -lt 1 ]; then
 	echo "Usage: $0 <platform> [<config file>]"
 	echo "  platform list:"
 	for i in $(ls platform/); do

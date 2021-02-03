@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=9.2
+PKGVERSION=10.1
 PKGNAME="gdb"
 SOURCEFILE="gdb-${PKGVERSION}.tar.xz"
 URL="ftp://sourceware.org/pub/gdb/releases"

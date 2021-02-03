@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=2020.80
+PKGVERSION=2020.81
 PKGNAME="dropbear"
 SOURCEFILE="dropbear-${PKGVERSION}.tar.bz2"
 URL="https://matt.ucc.asn.au/dropbear/releases/"

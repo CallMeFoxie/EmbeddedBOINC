@@ -88,9 +88,10 @@ package_default() {
 	echo ".. DONE"
 }
 
-for pkgfile in $(ls packages | sort -n); do
-	source ./packages/${pkgfile}
-	hash=$(sha256sum ./packages/${pkgfile} | cut -d" " -f1)
+for pkgdir in $(ls packages | sort -n); do
+	source ./packages/${pkgdir}/script.sh
+	find ./packages/${pkgdir}/script.sh ./packages/${pkgdir}/template/ -type f -exec md5sum "{}" + > ./tmp/checksum.$$
+	hash=$(md5sum ./tmp/checksum.$$ | cut -d" " -f1)
 	#rm -rf tmp/
 	echo "==== Working with ${PKGNAME} @ ${PKGVERSION} ===="
 	BUILD=1
@@ -122,13 +123,14 @@ for pkgfile in $(ls packages | sort -n); do
 			unpack
 		fi
 
-		echo "==== Building ${pkgfile} ===="
+		echo "==== Building ${pkgdir} ===="
 		(
 			cd build/${PKGPATH}
 			build
 		)
-		echo "=== Packaging ${pkgfile} ==="
+		echo "=== Packaging ${pkgdir} ==="
 		haspackaging=$(type -t package || :)
+		cp -rvp ./packages/${pkgdir}/template/* destdir/ || :
 		if [ -n "$haspackaging" ]; then
 			(
 				cd destdir
@@ -145,7 +147,8 @@ for pkgfile in $(ls packages | sort -n); do
 	unset -f package
 	unset PKGPATH haspackaging hasunpack SOURCEFILE URL DONTSTRIP
 
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} || :
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} || :
-	tar xpf "out/${PKGNAME}-${PKGVERSION}-bin_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} || :
+	echo "=== Installing ${pkgdir} into builddir ==="
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-lib_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} 2>/dev/null && echo " - lib" || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-dev_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} 2>/dev/null && echo " - dev" || :
+	tar xpf "out/${PKGNAME}-${PKGVERSION}-bin_${hash}.${ARCH}.tar.xz" -C ${TARGETFS} 2>/dev/null && echo " - bin" || :
 done
