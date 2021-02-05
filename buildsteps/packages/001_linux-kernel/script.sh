@@ -18,14 +18,23 @@ build() {
 	if [ x"${ARCH}" = "xarm" ]; then
 		outfile="zImage"
 	fi
+	if [ x"${ARCH}" = "xx86_64" ]; then
+		outfile="bzImage"
+	fi
 	make -j16 ${outfile}
-	make -j16 modules dtbs
+	if [ x"${ARCH}" = "x86_64" ]; then
+		make -j16 modules
+	else
+		make -j16 modules dtbs
+	fi
 	mkdir -p ${DESTDIR}/boot
 	if [ x"${ARCH}" = "xarm" ]; then
 		make LOADADDR=0x00208000 uImage -j16
 		cp arch/${ARCH}/boot/uImage ${DESTDIR}/boot/ulinux-odroidc1
 	fi
 	make modules_install INSTALL_MOD_PATH=${DESTDIR}
-	make dtbs_install INSTALL_DTBS_PATH=${DESTDIR}/boot/dtbs/linux-${PKGVERSION}
+	if [ x"${ARCH}" != "xx86_64" ]; then
+		make dtbs_install INSTALL_DTBS_PATH=${DESTDIR}/boot/dtbs/linux-${PKGVERSION}
+	fi
 	cp arch/${ARCH}/boot/${outfile} ${DESTDIR}/boot/
 }
