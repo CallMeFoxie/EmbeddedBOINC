@@ -36,6 +36,8 @@ for i in $(cat /etc/sysconfig/modules); do
         modprobe ${i}
 done
 
+sleep 2
+
 echo "UEBO Init: looking for all possible local storages..."
 for i in $(ls /dev/mmcblk* /dev/sd* /dev/hd*); do
 	e2fsck ${i} -p

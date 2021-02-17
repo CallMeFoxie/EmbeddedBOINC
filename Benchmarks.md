@@ -19,4 +19,5 @@ All devices are tested on identical builds (except arm64 vs armhf when applicabl
 | H96 Max TV box   | 2GHz, 1.5GHz | Rockchip RK3399 | 2xA72, 4xA53 | arm64 | 2786, 1629        | 11537, 4484     |
 | Tanix TX6        | 1.8GHz       | Allwinner H6    | 4xA53        | arm64 | 1941              | 4910            |
 | Orange Pi Zero   | 1.1GHz       | Allwinner H2    | 4xA7         | armhf |                   |                 |
-| Raspberry Pi 3B  | 1.2GHz       | Broadcom 2837   | 4xA53        | arm64 | 715               | 1804            |
+| Raspberry Pi 3B  | 1.2GHz       | Broadcom 2837   | 4xA53        | arm64 | 1286              | 3544            |
+| Raspberry Pi 4B  | 1.5GHz       | Broadcom 2711   | 4xA72        | arm64 | 2071              | 8628            |

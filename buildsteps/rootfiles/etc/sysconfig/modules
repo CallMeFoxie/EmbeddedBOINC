@@ -33,3 +33,7 @@ mdio-bcm-unimac
 bcm7xxx
 bcm-phy-lib
 genet
+sdhci-iproc
+raspberrypi-hwmon
+clk-raspberrypi
+raspberrypi-cpufreq
