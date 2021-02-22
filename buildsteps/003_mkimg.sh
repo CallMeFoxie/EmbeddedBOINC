@@ -58,15 +58,15 @@ EOF
 echo "=== welcome to Embedded BOINC shell ===" >> rootimage/etc/motd
 
 for i in ${BASEPKGS}; do
-	tar xvpf out/${i}*-bin_*.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
-	tar xvpf out/${i}*-lib_*.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
+	tar xvpf out/${i}*-bin_*.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin_*.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
+	tar xvpf out/${i}*-lib_*.${BASEARCH}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib_*.${BASEARCH}.tar.xz) >> rootimage/var/pkgs.txt || :
 done
 
 echo "> arch support: ${BASEARCH} ${EXTRAARCHS}" >> rootimage/etc/motd
 for arch in ${EXTRAARCHS}; do
 	for i in glibc libgcc; do
-		tar xvpf out/${i}*-bin_*.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
-		tar xvpf out/${i}*-lib_*.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
+		tar xvpf out/${i}*-bin_*.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-bin_*.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
+		tar xvpf out/${i}*-lib_*.${arch}.tar.xz -C rootimage/ 2>/dev/null && echo $(ls out/${i}*-lib_*.${arch}.tar.xz) >> rootimage/var/pkgs.txt || :
 	done
 done
 
