@@ -86,19 +86,21 @@ I also take donations in the form of devices, the distribution will be adjusted 
 ## Tested BOINC projects
 
 I've been crunching several projects over the recent months and so far all of them (with a bit of tweaks) all work on Embedded BOINC distro. Namely:
-- TN-Grid -- aarch64 and armhf
-- Rosetta@Home -- aarch64 required, but apparently requires also armhf glibc + libgcc?
-- World Community Grid -- armhf only (or aarch64 with armhf glibc + libgcc)
-- Universe@Home -- armhf only (or aarch64 with armhf glibc + libgcc)
+- TN-Grid -- aarch64 or armhf
+- Rosetta@Home -- aarch64 + armhf
+- World Community Grid -- armhf
+- Universe@Home -- armhf
 - LHC@Home -- aarch64 only
+- Yoyo@Home - armhf
 
 Projects that should work but have not been tested:
-- Yoyo@Home - should work, but I am not crunching that -- armhf only (or aarch64 with armhf glibc + libgcc)
-- Einstein@Home - should work if you enable beta/testing branch as the mainstream requires ancient libraries -- armhf only (or aarch64 with armhf glibc + libgcc)
+- Einstein@Home - should work if you enable beta/testing branch as the mainstream requires ancient libraries -- armhf
 
 Projects that won't work:
 - MLC@Home - requires libfuse and possibly other libraries
 - anything that is not available for armhf/aarch64 platforms
+
+Projects specified for armhf run on aarch64 platforms if you pack in armhf glibc + libgcc.
 
 ## Building and running
 

@@ -130,7 +130,7 @@ for pkgdir in $(ls packages | sort -n); do
 		)
 		echo "=== Packaging ${pkgdir} ==="
 		haspackaging=$(type -t package || :)
-		cp -rvp ./packages/${pkgdir}/template/* destdir/ || :
+		cp -ravp ./packages/${pkgdir}/template/* destdir/ || :
 		if [ -n "$haspackaging" ]; then
 			(
 				cd destdir
