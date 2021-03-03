@@ -64,7 +64,7 @@ deregister_prometheus_node() {
 
         cat <<EOF >/tmp/de_exporter.$$.json
 {
-  "Node": "$(hostname)",
+  "Node": "$(hostname)"
 }
 EOF
         curl -X PUT -d @/tmp/de_exporter.$$.json http://${uebo_consul}/v1/catalog/deregister
