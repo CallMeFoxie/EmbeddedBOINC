@@ -10,6 +10,8 @@ build_device() {
 	source "${CONFIG}"
 	source "platforms/${PLATFORM}.cfg"
 
+	echo "Building for ${DEVICE} on platform ${PLATFORM}"
+
 	kernel_version=$(tar tvpf out/linux-kernel-*-bin_*.${BASEARCH}.tar.xz  | grep "dtbs" | awk '{print $6}' | cut -d'/' -f4 | cut -d'-' -f2 | sort | tail -n 1)
 
 	if [ ! -z "${MACS+x}" ]; then
@@ -17,6 +19,7 @@ build_device() {
 			mac=$(echo "01-$i" | cut -d';' -f1 | tr '[:upper:]' '[:lower:]' | sed 's/:/-/g')
 			uebohostname=$(echo $i | cut -d';' -f2)
 			append=""
+			echo " > ${mac} - ${uebohostname}"
 			if [ x"${uebohostname}" != "x" ]; then
 				append="${append} uebo.hostname=${uebohostname}"
 			fi
@@ -42,6 +45,8 @@ EOF
 }
 
 config=${1:-".config"}
+
+rm tftproot/pxelinux.cfg/01-*
 
 for device in $(ls devices/*.cfg); do
 	xdevice=$(echo $device | rev | cut -d'.' -f2- | rev | cut -d'/' -f2)
