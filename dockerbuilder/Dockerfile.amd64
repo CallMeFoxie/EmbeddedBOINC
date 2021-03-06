@@ -3,8 +3,8 @@ FROM ubuntu:focal
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.10.12
-ENV binutils_version=2.36
+ENV kernel_version=5.11
+ENV binutils_version=2.36.1
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.0
 ENV gmp_version=6.2.0
@@ -66,17 +66,14 @@ WORKDIR /sources/gcc-${gcc_version}
 RUN tar xvpf ../mpfr-${mpfr_version}.tar.xz && mv mpfr-${mpfr_version} mpfr
 RUN tar xvpf ../gmp-${gmp_version}.tar.xz && mv gmp-${gmp_version} gmp
 RUN tar xvpf ../mpc-${mpc_version}.tar.gz && mv mpc-${mpc_version} mpc
+RUN apt install -y g++ libisl-dev
 WORKDIR /sources
 RUN mkdir gcc-build
 WORKDIR /sources/gcc-build
-RUN apt install -y g++ libisl-dev libmpc-dev libgmp-dev libmpfr-dev
 RUN ../gcc-${gcc_version}/configure \
   --prefix=${CLFS}/cross-tools \
-  --build=${CLFS_HOST} \
-  --host=${CLFS_HOST} \
   --target=${CLFS_TARGET} \
-  --with-sysroot=/ \
-  --prefix=/usr \
+  --with-sysroot=${CLFS} \
   --disable-nls \
   --disable-shared \
   --without-headers \
@@ -93,9 +90,10 @@ RUN ../gcc-${gcc_version}/configure \
   --with-mpfr-include=$(pwd)/../gcc-${gcc_version}/mpfr/src \
   --with-mpfr-lib=$(pwd)/mpfr/src/.libs \
   --with-arch=${CLFS_CPU}
-RUN make bootstrap -j16
-RUN chown -R nobody .
-RUN make install -j16
+#RUN make all-gcc all-target-libgcc -j1 # have to use -j1 otherwise it will crash
+RUN make -j16
+#RUN chown -R nobody .
+RUN make install-gcc install-target-libgcc
 WORKDIR /sources
 ENV PATH=/clfs/cross-tools/bin:/bin:/usr/bin
 
@@ -114,6 +112,30 @@ RUN ../glibc-${glibc_version}/configure \
 	--enable-kernel=${MINIMUM_KERNEL}
 RUN make -j16
 RUN make install
+
+# 5. GCC final
+WORKDIR /sources
+RUN rm -rf gcc-build
+WORKDIR /sources/gcc-build
+RUN apt install -y g++
+ENV CC="x86_64-pc-linux-gnu-gcc --sysroot=/"
+RUN ../gcc-${gcc_version}/configure \
+        --prefix=${CLFS}/cross-tools \
+        --build=${CLFS_HOST} \
+        --host=${CLFS_HOST} \
+        --target=${CLFS_TARGET} \
+        --with-sysroot=${CLFS}/cross-tools/${CLFS_TARGET} \
+        --disable-nls \
+        --enable-languages=c,c++ \
+        --enable-c99 \
+        --enable-long-long \
+        --disable-libmudflap \
+        --disable-multilib \
+        --with-mpfr-include=$(pwd)/../gcc-${gcc_version}/mpfr/src \
+        --with-mpfr-lib=$(pwd)/mpfr/src/.libs
+RUN make -j16
+RUN make install
+
 
 ENV CROSS_COMPILE=${CLFS_TARGET}-
 RUN apt install vim pkg-config libtool patch bc device-tree-compiler -y && apt autoremove -y
