@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION="1_1_1i"
+PKGVERSION="1_1_1j"
 PKGNAME="openssl"
 SOURCEFILE="OpenSSL_${PKGVERSION}.tar.gz"
 URL="https://github.com/openssl/openssl/archive/"

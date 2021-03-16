@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=7.16.14
+PKGVERSION=7.16.16
 PKGNAME="boinc-client"
 SOURCEFILE="${PKGVERSION}.tar.gz"
 URL="https://github.com/BOINC/boinc/archive/client_release/7.16/"

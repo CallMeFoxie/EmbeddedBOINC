@@ -46,7 +46,7 @@ EOF
 
 config=${1:-".config"}
 
-rm tftproot/pxelinux.cfg/01-*
+rm tftproot/pxelinux.cfg/01-* || :
 
 for device in $(ls devices/*.cfg); do
 	xdevice=$(echo $device | rev | cut -d'.' -f2- | rev | cut -d'/' -f2)
