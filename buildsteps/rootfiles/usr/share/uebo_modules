@@ -1,0 +1,17 @@
+load_compatible_modules() {
+	for compat in $(cat /proc/device-tree/compatible | tr '\0' ' '); do
+		echo -n "UEBO compat: $compat ... "
+		compat=$(echo $compat | tr ',' '-')
+		if [ -f "/etc/devices/$compat" ]; then
+			echo "exists!"
+			for module in $(cat "/etc/devices/$compat"); do
+				if [ x"${module}" != "x" ]; then
+					echo " > $module"
+					modprobe $module
+				fi
+			done
+		else
+			echo "none"
+		fi
+	done
+}

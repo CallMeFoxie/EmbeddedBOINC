@@ -35,6 +35,8 @@ echo "UEBO: Loading kernel modules"
 for i in $(cat /etc/sysconfig/modules); do
         modprobe ${i}
 done
+source /usr/share/uebo_modules
+load_compatible_modules
 
 sleep 2
 

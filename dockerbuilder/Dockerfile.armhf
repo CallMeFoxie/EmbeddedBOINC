@@ -3,14 +3,14 @@ FROM ubuntu:focal
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.10.12
-ENV binutils_version=2.36
+ENV kernel_version=5.10.33
+ENV binutils_version=2.36.1
 ENV mpfr_version=4.1.0
-ENV mpc_version=1.2.0
-ENV gmp_version=6.2.0
-ENV gcc_version=10.2.0
+ENV mpc_version=1.2.1
+ENV gmp_version=6.2.1
+ENV gcc_version=11.1.0
 ENV glibc_version=2.33
-ENV golang_version=1.15.7
+ENV golang_version=1.16.3
 
 ENV MINIMUM_KERNEL=5.10.0
 
@@ -19,7 +19,7 @@ WORKDIR /sources
 
 RUN wget \
 	ftp://sourceware.org/pub/binutils/releases/binutils-${binutils_version}.tar.xz \
-	https://gforge.inria.fr/frs/download.php/file/38345/mpfr-${mpfr_version}.tar.xz \
+	https://www.mpfr.org/mpfr-current/mpfr-${mpfr_version}.tar.xz \
 	https://ftp.gnu.org/gnu/mpc/mpc-${mpc_version}.tar.gz \
 	https://gmplib.org/download/gmp/gmp-${gmp_version}.tar.xz \
 	ftp://ftp.mpi-sb.mpg.de/pub/gnu/mirror/gcc.gnu.org/pub/gcc/releases/gcc-${gcc_version}/gcc-${gcc_version}.tar.xz \
