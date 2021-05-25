@@ -14,5 +14,8 @@ echo 'Waiting for services to stop...'
 sv -w196 force-stop /etc/service/*
 sv exit /etc/service/*
 
+echo 'Saving time to /storage/lastdate'
+date +"%Y-%M-%d %T" > /storage/lastdate
+
 echo 'Shutdown...'
 /sbin/runit-init $LAST

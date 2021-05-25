@@ -11,7 +11,7 @@ ldconfig
 
 echo "UEBO: Setting up all available gettys based on /proc/consoles"
 for i in $(cat /proc/consoles | cut -d" " -f1); do
-        echo "UBO: Preparing getty on $i"
+        echo "UEBO: Preparing getty on $i"
         cp -rp /etc/service.d/getty /etc/service/tty-${i}
 done
 
@@ -61,6 +61,12 @@ fi
 echo "UEBO: Setting hostname"
 if [ -f /storage/hostname ]; then
 	default_hostname=$(cat /storage/hostname)
+fi
+
+if [ -f /storage/lastdate ]; then
+	lastdate=$(cat /storage/lastdate)
+	echo "Setting time to $lastdate before ntp is up"
+	date -s "$lastdate"
 fi
 
 echo ${default_hostname} > /proc/sys/kernel/hostname

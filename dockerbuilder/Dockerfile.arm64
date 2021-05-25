@@ -3,7 +3,7 @@ FROM ubuntu:focal
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.10.33
+ENV kernel_version=5.10.39
 ENV binutils_version=2.36.1
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.1
