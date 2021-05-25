@@ -48,6 +48,8 @@ config=${1:-".config"}
 
 rm tftproot/pxelinux.cfg/01-* || :
 
+mkdir -p tftproot/pxelinux.cfg/
+
 for device in $(ls devices/*.cfg); do
 	xdevice=$(echo $device | rev | cut -d'.' -f2- | rev | cut -d'/' -f2)
 	build_device $xdevice $config
