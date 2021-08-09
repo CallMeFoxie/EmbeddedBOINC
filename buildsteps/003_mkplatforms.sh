@@ -2,6 +2,25 @@
 
 set -eu
 
+FAKEROOT=$(which fakeroot)
+MKPASSWD=$(which mkpasswd)
+MKIMAGE=$(which mkimage)
+
+if [ x"${FAKEROOT}" = "x" ]; then
+	echo "missing fakeroot!"
+	exit 1
+fi
+
+if [ x"${MKPASSWD}" = "x" ]; then
+	echo "missing mkpasswd!"
+	exit 1
+fi
+
+if [ x"${MKIMAGE}" = "x" ]; then
+	echo "missing mkimage!"
+	exit 1
+fi
+
 build_platform() {
 	PLATFORM=$1
 	CONFIG=$2

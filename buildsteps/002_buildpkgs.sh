@@ -14,7 +14,7 @@ export CFLAGS="-O2 -pipe"
 export CPPFLAGS="-O2 -pipe"
 export CXXFLAGS="-O2 -pipe"
 
-mkdir -p ${TARGETFS} ${TARGETDEV} build sources out
+mkdir -p ${TARGETFS} ${TARGETDEV} build sources out tmp
 
 rm -rf ${TARGETFS}/* ${TARGETDEV}/* build/*
 
