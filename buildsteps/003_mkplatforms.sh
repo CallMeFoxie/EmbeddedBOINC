@@ -45,6 +45,7 @@ build_platform() {
 	mkdir -p rootimage
 
 	cp -rpd rootfiles/* rootimage/
+	mkdir -p rootimage/{proc,sys,run,tmp,dev}
 
 	cat <<EOF >> rootimage/etc/motd
   ______           _              _     _          _   ____   ____ _____ _   _  _____ 

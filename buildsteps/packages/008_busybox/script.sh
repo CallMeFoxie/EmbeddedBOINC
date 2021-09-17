@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=1.32.1
+PKGVERSION=1.33.1
 PKGNAME="busybox"
 SOURCEFILE="busybox-${PKGVERSION}.tar.bz2"
 URL="https://busybox.net/downloads/"

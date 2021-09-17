@@ -1,0 +1,7 @@
+#!/bin/sh
+
+while [ true ]; do
+  i=0; for pid in $(pgrep -P $(pidof boinc) | sort); do printf "%d 0x%x\n" $pid $((1<<$i)); taskset -p $(printf "0x%x" $((1<<$i))) $pid; i=$((i+1)); done;
+  sleep 120;
+done
+
