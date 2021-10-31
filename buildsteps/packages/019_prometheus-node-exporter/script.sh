@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=1.0.1
+PKGVERSION=1.2.2
 PKGNAME="prometheus-node-exporter"
 SOURCEFILE="v${PKGVERSION}.tar.gz"
 URL="https://github.com/prometheus/node_exporter/archive/"

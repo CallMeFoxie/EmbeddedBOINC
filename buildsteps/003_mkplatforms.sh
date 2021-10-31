@@ -62,7 +62,8 @@ EOF
 NAME=EmbeddedBOINC
 PRETTY_NAME=EmbeddedBOINC
 VERSION=$(git describe || echo "master")
-ID=ueboTFORM="arm64-plus-armhf-with-monitoring"
+ID=uebo
+TFORM="${PLATFORM}"
 VARIANT=${BASEARCH}+${EXTRAARCHS}
 EOF
 
