@@ -8,7 +8,7 @@ URL="https://busybox.net/downloads/"
 build() {
 	cp ../../configs/busybox.conf .config
 	ARCH="arm64" make oldconfig
-	make -j16
+	make -j${NPROC}
 	make install
 	mv _install/* ${DESTDIR}
 	mkdir -p ${DESTDIR}/etc/udhcpc/

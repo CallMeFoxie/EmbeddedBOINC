@@ -7,6 +7,6 @@ URL="https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/snapshot"
 
 build() {
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --enable-fsck 
-	make -j16
+	make -j${NPROC}
 	make install DESTDIR=${DESTDIR}
 }

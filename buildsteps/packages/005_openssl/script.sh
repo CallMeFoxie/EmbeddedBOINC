@@ -19,7 +19,7 @@ build() {
 			exit 1
 			;;
 	esac
-	make -j16
+	make -j${NPROC}
 	make install DESTDIR=${DESTDIR}
 }
 

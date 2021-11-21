@@ -7,7 +7,7 @@ URL="https://github.com/michaelrsweet/mxml/archive/"
 
 build() {
 	./configure ${DEFAULT_CONFIGURE_FLAGS}
-	make -j16
+	make -j${NPROC}
 	make install DSTROOT=${DESTDIR}
 }
 

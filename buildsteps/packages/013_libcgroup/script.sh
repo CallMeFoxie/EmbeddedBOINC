@@ -7,6 +7,6 @@ URL="https://github.com/libcgroup/libcgroup/releases/download/v${PKGVERSION}"
 
 build() {
 	ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes ./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-pam --disable-daemon
-	make -j16
+	make -j${NPROC}
 	make install DESTDIR=${DESTDIR}
 }

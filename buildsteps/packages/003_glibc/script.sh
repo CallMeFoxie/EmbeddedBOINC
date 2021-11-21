@@ -13,6 +13,6 @@ build() {
 	        CROSS_COMPILE=${CLFS_TARGET}- \
 		${DEFAULT_CONFIGURE_FLAGS} \
 		--enable-kernel=${MINIMUM_KERNEL}
-	make -j16
+	make -j${NPROC}
 	make install DESTDIR=${DESTDIR}
 }

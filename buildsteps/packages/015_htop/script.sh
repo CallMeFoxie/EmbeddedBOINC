@@ -8,7 +8,7 @@ URL="https://github.com/htop-dev/htop/archive/"
 build() {
 	./autogen.sh
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --enable-cgroup --disable-unicode LDFLAGS="-ltinfo"
-	make -j16
+	make -j${NPROC}
 	make install DESTDIR=${DESTDIR}
 }
 

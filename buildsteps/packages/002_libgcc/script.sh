@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=11.1.0
+PKGVERSION=${gcc_version}
 PKGNAME="libgcc"
 
 build() {

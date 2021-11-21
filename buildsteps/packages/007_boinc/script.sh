@@ -12,7 +12,7 @@ build() {
 	patch -p1 < ../../patches/boinc/libc-version.patch
 	./_autosetup
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-server --disable-fcgi --disable-manager
-	make -j16
+	make -j${NPROC}
 	make install DESTDIR=${DESTDIR}
 	mkdir -p ${DESTDIR}/etc/ssl/ ${DESTDIR}/etc/boinc-client/
 	cp curl/ca-bundle.crt ${DESTDIR}/etc/ssl/ca-bundle.crt

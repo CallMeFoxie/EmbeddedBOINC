@@ -11,6 +11,6 @@ build() {
 	mkdir gdb-build
 	cd gdb-build
 	../gdb-${PKGVERSION}/configure ${DEFAULT_CONFIGURE_FLAGS}
-	make -j16
+	make -j${NPROC}
 	make install DESTDIR=${DESTDIR}
 }

@@ -1,18 +1,20 @@
 FROM ubuntu:focal
 
+ARG NPROC=32
+
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.10.55
+ENV kernel_version=5.15.4
 ENV binutils_version=2.37
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.1
 ENV gmp_version=6.2.1
 ENV gcc_version=11.2.0
 ENV glibc_version=2.34
-ENV golang_version=1.16.6
+ENV golang_version=1.17.3
 
-ENV MINIMUM_KERNEL=5.10.0
+ENV MINIMUM_KERNEL=5.15.0
 
 ENV CLFS=/clfs
 WORKDIR /sources
@@ -59,7 +61,7 @@ RUN ../binutils-${binutils_version}/configure \
 	--disable-nls \
 	--disable-multilib
 RUN make configure-host
-RUN make -j16
+RUN make -j${NPROC}
 RUN make install
 WORKDIR /sources
 
@@ -97,8 +99,8 @@ RUN ../gcc-${gcc_version}/configure \
   --with-arch=${CLFS_ARM_ARCH} \
   --with-float=${CLFS_FLOAT} \
   --with-fpu=${CLFS_FPU}
-RUN make all-gcc all-target-libgcc -j16
-RUN make install-gcc install-target-libgcc -j16
+RUN make all-gcc all-target-libgcc -j${NPROC}
+RUN make install-gcc install-target-libgcc -j${NPROC}
 WORKDIR /sources
 
 # 4. glibc
@@ -112,7 +114,7 @@ RUN ../glibc-${glibc_version}/configure \
 	--build=${CLFS_HOST} \
 	--host=${CLFS_TARGET} \
 	--enable-kernel=${MINIMUM_KERNEL}
-RUN make -j16
+RUN make -j${NPROC}
 RUN make install
 
 # 5. GCC final
@@ -139,7 +141,7 @@ RUN ../gcc-${gcc_version}/configure \
 	--with-arch=${CLFS_ARM_ARCH} \
 	--with-float=${CLFS_FLOAT} \
 	--with-fpu=${CLFS_FPU}
-RUN make -j16
+RUN make -j${NPROC}
 RUN make install
 RUN cat /sources/gcc-${gcc_version}/gcc/limitx.h /sources/gcc-${gcc_version}/gcc/glimits.h /sources/gcc-${gcc_version}/gcc/limity.h > /clfs/cross-tools/lib/gcc/${CLFS_TARGET}/${gcc_version}/include-fixed/limits.h
 
