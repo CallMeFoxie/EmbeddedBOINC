@@ -130,3 +130,10 @@ to scrape all nodes & boinc exporters. That's it.
 ## License
 
 Probably MIT or whatever you want to do with it. There's no secrets, nothing special, just a bunch of shell scripts.
+
+## Donations
+
+You can donate using three ways:
+- on Patreon or Github to become a sponsor
+- donate Hardware (contact me privately on twitter)
+- I take also Gridcoin on address `SFwTSDqj9HDeG3VPF2sPHBGpg6fru5p4CZ`
