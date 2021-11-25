@@ -74,11 +74,9 @@ Boards I would like to support but don't have:
 
 Proper tested release map can be found in [Benchmarks](Benchmarks.md) file.
 
-Do note that no armhf has been tested on a live device yet as I do not have any in my drawers right now.
-
 If you want another board supported it should be pretty easy - throw required modules into configs/kernel.conf and rebuild the kernel package and test it out. The rest should be universal. Then feel free to send me a pull request with the device :).
 
-I also take donations in the form of devices, the distribution will be adjusted to the device as much as possible and then the device will take part in the compute cabinet.
+I also take donations in the form of devices, the distribution will be adjusted to the device as much as possible and then the device will take part in the compute cabinet (right now I have roughly 25 devices online with another 7 waiting to be plugged in).
 
 ## Tested BOINC projects
 
@@ -89,6 +87,7 @@ I've been crunching several projects over the recent months and so far all of th
 - Universe@Home -- armhf
 - LHC@Home -- aarch64 only
 - Yoyo@Home - armhf
+- Minecraft@Home -- aarch64 only
 
 Projects that should work but have not been tested:
 - Einstein@Home - should work if you enable beta/testing branch as the mainstream requires ancient libraries -- armhf
@@ -97,7 +96,7 @@ Projects that won't work:
 - MLC@Home - requires libfuse and possibly other libraries
 - anything that is not available for armhf/aarch64 platforms
 
-Projects specified for armhf run on aarch64 platforms if you pack in armhf glibc + libgcc.
+Projects specified for armhf run on aarch64 platforms if you pack in armhf glibc + libgcc (required only for some).
 
 ## Building and running
 
