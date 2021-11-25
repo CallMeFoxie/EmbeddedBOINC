@@ -60,22 +60,19 @@ Target devices that are thoroughly tested and developed against:
 - SOPine64 clusterboard (Allwinner A64, arm64)
 - Pine64+ (Allwinner A64, arm64)
 - QEMU (only for testing and development) (Generic Cortex A53 with AMBA PL011 serial driver + e1000, arm64)
-
-Tested that at least boot:
+- Raspberry Pi 3 (arm64)
 - ASUS Tinkerboard (Rockchip RK3288, armhf)
 - Hardkernel Odroid C1+ (Amlogic S805, armhf, no network boot)
 - Orange Pi PC (Allwinner H3, armhf)
-
-Added but not tested:
 - Tanix TX6 (Allwinner H6, arm64)
 - Orange Pi 4 (Rockchip RK3399, arm64)
+- a RK3399-based TV box ("H96 Max")
 
-To be added when I get the time for it:
-- Raspberry Pi 3 (arm64)
-- a RK3399-based TV box
-
-Boards I would like to support but don't and won't have:
+Boards I would like to support but don't have:
 - Raspberry Pi 1 and 2 (armhf)
+- every other ARM/ARM64 device :)
+
+Proper tested release map can be found in [Benchmarks](Benchmarks.md) file.
 
 Do note that no armhf has been tested on a live device yet as I do not have any in my drawers right now.
 
