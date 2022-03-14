@@ -71,3 +71,28 @@ EOF
         rm /tmp/de_exporter.$$.json
 
 }
+
+create_user() {
+	user=$1
+	home=${2:-"/var/run/${user}"}
+
+	if ! getent group "$user"; then
+	        addgroup -S "$user"
+	fi
+	
+	if ! getent passwd "$user"; then
+	         adduser -h $home -s /usr/sbin/nologin -G "$user" -S -D -H "$user"
+	fi
+}
+
+create_memory_group() {
+	groupname=$1
+	limit=$2
+
+	if [ ! -d "/sys/fs/cgroup/memory/${groupname}" ]; then
+	        mkdir "/sys/fs/cgroup/memory/${groupname}"
+	fi
+	
+	echo $limit > "/sys/fs/cgroup/memory/${groupname}/memory.limit_in_bytes"
+
+}

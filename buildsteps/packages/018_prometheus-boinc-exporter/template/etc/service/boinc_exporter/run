@@ -9,11 +9,7 @@ fi
 source /usr/share/uebo_shell_stuff
 register_prometheus_service boinc_exporter 9109
 
-if [ ! -d /sys/fs/cgroup/memory/prometheus ]; then
-	mkdir /sys/fs/cgroup/memory/prometheus
-fi
-
 memlimit=$((40*1024*1024)) # 40MB?
-echo $memlimit > /sys/fs/cgroup/memory/prometheus/memory.limit_in_bytes
+create_memory_group prometheus $memlimit
 
 exec cgexec -g memory:prometheus /usr/bin/boinc_exporter "$(cat /var/lib/boinc-client/gui_rpc_auth.cfg)"

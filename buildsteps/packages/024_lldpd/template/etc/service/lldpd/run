@@ -1,0 +1,10 @@
+#!/bin/sh
+
+MEMLIMIT=$((5*1024*1024)) # 5MB
+
+source /usr/share/uebo_shell_stuff
+
+create_user _lldpd
+create_memory_group lldpd $MEMLIMIT
+
+exec cgexec -g memory:lldpd /usr/sbin/lldpd -d -c

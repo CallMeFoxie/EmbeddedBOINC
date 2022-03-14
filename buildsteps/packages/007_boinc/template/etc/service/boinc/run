@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source /usr/share/uebo_shell_stuff
+
 umount /var/lib/boinc-client 2>/dev/null || :
 
 mkdir -p /var/lib/boinc-client
@@ -12,13 +14,7 @@ uebo_boinc_password=""
 uebo_boin_remote_hosts=""
 source /run/bootargs
 
-if ! getent group boinc; then
-	addgroup -S boinc
-fi
-
-if ! getent passwd boinc; then
-	 adduser -h /var/lib/boinc-client -s /usr/sbin/nologin -G boinc -S -D -H boinc
-fi
+create_user boinc /var/lib/boinc-client
 
 mkdir -p /etc/boinc-client
 
@@ -38,11 +34,7 @@ if [ ! -z "${uebo_boinc_remote_hosts}" ]; then
 fi
 chown -R boinc:boinc /var/lib/boinc-client
 
-if [ ! -d /sys/fs/cgroup/memory/boinc ]; then
-	mkdir /sys/fs/cgroup/memory/boinc
-fi
-
 memlimit=$(($(cat /proc/meminfo | grep MemTotal | awk '{print $2}')*900))
-echo $memlimit > /sys/fs/cgroup/memory/boinc/memory.limit_in_bytes
+create_memory_group boinc $memlimit
 
 exec cgexec -g memory:boinc chpst -uboinc /usr/bin/boinc --dir /var/lib/boinc-client
