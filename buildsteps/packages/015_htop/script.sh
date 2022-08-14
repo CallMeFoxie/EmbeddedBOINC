@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=3.1.0
+PKGVERSION=3.2.0
 PKGNAME="htop"
 SOURCEFILE="${PKGVERSION}.tar.gz"
 URL="https://github.com/htop-dev/htop/archive/"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=1.46.4
+PKGVERSION=1.46.5
 PKGNAME="e2fsprogs"
 SOURCEFILE="e2fsprogs-${PKGVERSION}.tar.gz"
 URL="https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/snapshot"

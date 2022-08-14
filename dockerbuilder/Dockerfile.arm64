@@ -5,14 +5,14 @@ ARG NPROC=32
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.15.4
-ENV binutils_version=2.37
+ENV kernel_version=5.15.58
+ENV binutils_version=2.38
 ENV mpfr_version=4.1.0
 ENV mpc_version=1.2.1
 ENV gmp_version=6.2.1
-ENV gcc_version=11.2.0
-ENV glibc_version=2.34
-ENV golang_version=1.17.3
+ENV gcc_version=12.1.0
+ENV glibc_version=2.36
+ENV golang_version=1.18.5
 
 ENV MINIMUM_KERNEL=5.15.0
 
@@ -101,7 +101,10 @@ RUN make install-gcc install-target-libgcc -j${NPROC}
 WORKDIR /sources
 
 # 4. glibc
+RUN apt install patch
 RUN tar xvpf glibc-${glibc_version}.tar.xz
+ADD patches/patch-glibc-scm-timestamps.patch patches/patch-glibc-scm-timestamps.patch
+#RUN patch -dglibc-${glibc_version} -p1 < patches/patch-glibc-scm-timestamps.patch
 WORKDIR /sources/glibc-build
 RUN apt remove --purge g++ g++-9 -y 
 RUN ../glibc-${glibc_version}/configure \

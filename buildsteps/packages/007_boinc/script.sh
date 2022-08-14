@@ -1,15 +1,14 @@
 #!/bin/bash
 
-PKGVERSION=7.16.20
+PKGVERSION=7.20.2
 PKGNAME="boinc-client"
 SOURCEFILE="${PKGVERSION}.tar.gz"
-URL="https://github.com/BOINC/boinc/archive/client_release/7.16/"
+URL="https://github.com/BOINC/boinc/archive/client_release/7.20/"
 
 build() {
 	patch -p1 < ../../patches/boinc/fix-hardfp-arm2.patch
 	patch -p1 < ../../patches/boinc/arm64-arm-alt-platform.patch
 	patch -p1 < ../../patches/boinc/sched-plus-aclh.patch
-	patch -p1 < ../../patches/boinc/libc-version.patch
 	./_autosetup
 	./configure ${DEFAULT_CONFIGURE_FLAGS} --disable-server --disable-fcgi --disable-manager
 	make -j${NPROC}
@@ -21,5 +20,5 @@ build() {
 }
 
 unpack() {
-	mv "build/boinc-client_release-7.16-${PKGVERSION}" "build/${PKGVERSION}"
+	mv "build/boinc-client_release-7.20-${PKGVERSION}" "build/${PKGVERSION}"
 }

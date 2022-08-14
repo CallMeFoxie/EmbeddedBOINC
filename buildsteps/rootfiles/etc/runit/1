@@ -55,7 +55,7 @@ if [ x"${uebo_nfsdir}" != "x" ]; then
         mountpoint -q /storage && umount /storage
 
 	echo -n "UEBO: Trying to mount nfs4 at /storage ..."
-	mount -t nfs4 "${setupnfs}" /storage && echo " ok" || echo " fail"
+	mount -t nfs4 "${uebo_nfsdir}" /storage && echo " ok" || echo " fail"
 fi
 
 echo "UEBO: Setting hostname"

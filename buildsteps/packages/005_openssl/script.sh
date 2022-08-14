@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PKGVERSION="1_1_1l"
+PKGVERSION="3.0.5"
 PKGNAME="openssl"
-SOURCEFILE="OpenSSL_${PKGVERSION}.tar.gz"
-URL="https://github.com/openssl/openssl/archive/"
+SOURCEFILE="openssl-${PKGVERSION}.tar.gz"
+URL="https://github.com/openssl/openssl/archive/refs/tags/"
 
 build() {
 	export CROSS_COMPILE=
@@ -24,5 +24,5 @@ build() {
 }
 
 unpack() {
-	mv build/openssl-OpenSSL_${PKGVERSION} build/OpenSSL_${PKGVERSION}
+	mv build/openssl-openssl-${PKGVERSION} build/openssl-${PKGVERSION}
 }

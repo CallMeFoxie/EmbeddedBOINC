@@ -21,6 +21,9 @@ if [ x"${MKIMAGE}" = "x" ]; then
 	exit 1
 fi
 
+rm -rf tftproot || :
+mkdir tftproot
+
 build_platform() {
 	PLATFORM=$1
 	CONFIG=$2

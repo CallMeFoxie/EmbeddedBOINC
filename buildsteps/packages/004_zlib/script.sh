@@ -1,11 +1,15 @@
 #!/bin/bash
 
-PKGVERSION=1.2.11
+PKGVERSION=1.2.12
 PKGNAME="zlib"
 SOURCEFILE="zlib-${PKGVERSION}.tar.gz"
 URL="https://zlib.net/"
 
 build() {
-	./configure --prefix=/usr 
+	export CHOST=${CLFS_TARGET}
+	export LDSHARED="$CC -shared"
+	export CFLAGS="-fPIC"
+	export CPPFLAGS="-fPIC"
+	CHOST=${CLFS_TARGET} ./configure --prefix=/usr 
 	make install DESTDIR=${DESTDIR}
 }
