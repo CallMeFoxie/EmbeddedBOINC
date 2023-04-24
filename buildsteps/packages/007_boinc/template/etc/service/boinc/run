@@ -11,7 +11,7 @@ mountpoint -q /storage && mkdir -p /storage/boinc && mount --bind /storage/boinc
 mountpoint /var/lib/boinc-client -q || exit 1
 
 uebo_boinc_password=""
-uebo_boin_remote_hosts=""
+uebo_boinc_remote_hosts=""
 source /run/bootargs
 
 create_user boinc /var/lib/boinc-client

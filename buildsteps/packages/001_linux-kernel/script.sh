@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PKGVERSION="5.15.60"
+PKGVERSION="6.1.1"
 PKGNAME="linux-kernel"
 SOURCEFILE="linux-${PKGVERSION}.tar.xz"
-URL="https://cdn.kernel.org/pub/linux/kernel/v5.x"
+URL="https://cdn.kernel.org/pub/linux/kernel/v6.x"
 DONTSTRIP=1
 
 build() {

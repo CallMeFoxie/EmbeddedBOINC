@@ -36,6 +36,10 @@ for x in $(cat /proc/cmdline); do
 	echo "export $(echo $argname | sed 's/\./_/g')=${argval}" >> /run/bootargs
 done
 
+if [ x"${uebo_macaddr}" != "x" ]; then
+	ip link set dev eth0 address "${uebo_macaddr}"
+fi
+
 if [ x"${waitfornet}" = "xyes" ]; then
 	echo -n "UEBO: Trying to ifup eth0 ... "
 	ifup eth0

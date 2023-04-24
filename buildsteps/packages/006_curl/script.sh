@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=7.84.0
+PKGVERSION=7.87.0
 PKGNAME="curl"
 SOURCEFILE="curl-${PKGVERSION}.tar.xz"
 suburl=$(echo $PKGVERSION | sed 's/\./_/g')

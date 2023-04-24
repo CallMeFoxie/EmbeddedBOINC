@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PKGVERSION=1.2.12
+PKGVERSION=1.2.13
 PKGNAME="zlib"
 SOURCEFILE="zlib-${PKGVERSION}.tar.gz"
 URL="https://zlib.net/"

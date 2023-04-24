@@ -5,16 +5,16 @@ ARG NPROC=32
 RUN ln -fs /usr/share/zoneinfo/Europe/Prague /etc/localtime
 RUN mkdir -p /clfs /sources && apt update && apt -y install --no-install-recommends wget ca-certificates gcc-9 python3 bison gawk flex rsync file xz-utils make texinfo swig python3-distutils libpython3-dev libssl-dev
 
-ENV kernel_version=5.15.58
-ENV binutils_version=2.38
-ENV mpfr_version=4.1.0
-ENV mpc_version=1.2.1
+ENV kernel_version=6.1.1
+ENV binutils_version=2.39
+ENV mpfr_version=4.1.1
+ENV mpc_version=1.3.1
 ENV gmp_version=6.2.1
-ENV gcc_version=12.1.0
+ENV gcc_version=12.2.0
 ENV glibc_version=2.36
-ENV golang_version=1.18.5
+ENV golang_version=1.19.4
 
-ENV MINIMUM_KERNEL=5.15.0
+ENV MINIMUM_KERNEL=6.1.0
 
 ENV CLFS=/clfs
 WORKDIR /sources
@@ -26,7 +26,7 @@ RUN wget \
 	https://gmplib.org/download/gmp/gmp-${gmp_version}.tar.xz \
 	ftp://ftp.mpi-sb.mpg.de/pub/gnu/mirror/gcc.gnu.org/pub/gcc/releases/gcc-${gcc_version}/gcc-${gcc_version}.tar.xz \
 	https://ftp.gnu.org/gnu/glibc/glibc-${glibc_version}.tar.xz \
-	https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${kernel_version}.tar.xz \
+	https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${kernel_version}.tar.xz \
 	https://golang.org/dl/go${golang_version}.linux-amd64.tar.gz \
     -P /sources
 
@@ -45,7 +45,7 @@ RUN mkdir -p $CLFS/cross-tools/${CLFS_TARGET} && ln -sfv ${CLFS}/cross-tools/ ${
 RUN tar xvpf linux-${kernel_version}.tar.xz
 WORKDIR /sources/linux-${kernel_version}
 RUN make mrproper
-RUN make headers_check
+#RUN make headers_check
 RUN apt install -y --no-install-recommends gcc libc6-dev
 RUN make INSTALL_HDR_PATH=${CLFS}/cross-tools/${CLFS_TARGET} headers_install
 WORKDIR /sources
@@ -54,6 +54,7 @@ WORKDIR /sources
 RUN tar xvpf binutils-${binutils_version}.tar.xz
 RUN mkdir binutils-build
 WORKDIR /sources/binutils-build
+RUN apt -y install g++
 RUN ../binutils-${binutils_version}/configure \
 	--prefix=${CLFS}/cross-tools \
 	--target=${CLFS_TARGET} \
